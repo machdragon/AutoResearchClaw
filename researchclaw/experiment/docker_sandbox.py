@@ -364,6 +364,9 @@ class DockerSandbox:
             f"--shm-size={cfg.shm_size_mb}m",
         ]
 
+        for vol in cfg.extra_volumes:
+            cmd.extend(["-v", vol])
+
         # --- Network policy ---
         if cfg.network_policy == "none":
             # Fully isolated — no network at any point
