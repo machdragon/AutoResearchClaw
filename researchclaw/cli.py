@@ -497,6 +497,36 @@ def cmd_report(args: argparse.Namespace) -> int:
         print(f"\nReport written to {output}")
     return 0
 
+
+def cmd_snapshot(args: argparse.Namespace) -> int:
+    from researchclaw.snapshot import (
+        build_snapshot,
+        collect_run_scores,
+        write_snapshot_files,
+    )
+
+    artifacts_root = Path(cast(str, args.artifacts_root))
+    output_root = Path(cast(str, args.output_root))
+    top = int(cast(int, args.top))
+
+    scores = collect_run_scores(artifacts_root)
+    snapshot = build_snapshot(scores, top=top)
+    latest_path, hour_path = write_snapshot_files(snapshot, output_root)
+    leaderboard = snapshot.get("leaderboard", {})
+    best = leaderboard.get("global_best") if isinstance(leaderboard, dict) else None
+    if isinstance(best, dict):
+        best_score = best.get("score", 0.0)
+    else:
+        best_score = leaderboard.get("average_score", 0.0) if isinstance(leaderboard, dict) else 0.0
+
+    print(f"Snapshot written: {latest_path}")
+    print(f"Hourly archive:  {hour_path}")
+    print(
+        f"Indexed {snapshot['run_counts']['total_runs']} runs; "
+        f"best score={best_score}"
+    )
+    return 0
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="researchclaw",
@@ -559,6 +589,27 @@ def main(argv: list[str] | None = None) -> int:
         "--run-dir", required=True, help="Path to run artifacts directory"
     )
     _ = rpt_p.add_argument("--output", "-o", help="Write report to file")
+
+    snap_p = sub.add_parser(
+        "snapshot",
+        help="Build leaderboard snapshot JSON files from artifacts runs",
+    )
+    _ = snap_p.add_argument(
+        "--artifacts-root",
+        default="artifacts",
+        help="Artifacts directory containing run subdirectories",
+    )
+    _ = snap_p.add_argument(
+        "--output-root",
+        default="snapshots",
+        help="Output directory for latest/hourly snapshots",
+    )
+    _ = snap_p.add_argument(
+        "--top",
+        type=int,
+        default=10,
+        help="How many top runs to keep in leaderboard",
+    )
     args = parser.parse_args(argv)
 
     command = cast(str | None, args.command)
@@ -575,6 +626,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_setup(args)
     elif command == "report":
         return cmd_report(args)
+    elif command == "snapshot":
+        return cmd_snapshot(args)
     else:
         parser.print_help()
         return 0

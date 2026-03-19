@@ -22,16 +22,18 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-# Models that require max_completion_tokens instead of max_tokens
+# Models that require max_completion_tokens instead of max_tokens, and don't support temperature
 _NEW_PARAM_MODELS = frozenset(
     {
         "o3",
         "o3-mini",
+        "gpt-5",
         "o4-mini",
         "gpt-5",
         "gpt-5.1",
         "gpt-5.2",
         "gpt-5.4",
+        "gpt-5-mini",
     }
 )
 
@@ -217,14 +219,17 @@ class LLMClient:
         )
         min_tokens = 64 if is_reasoning else 1
         try:
-            _ = self.chat(
+            _ = self._call_with_retry(
+                self.config.primary_model,
                 [{"role": "user", "content": "ping"}],
-                max_tokens=min_tokens,
-                temperature=0,
+                min_tokens,
+                0,
+                False,
             )
             return True, f"OK - model {self.config.primary_model} responding"
         except urllib.error.HTTPError as e:
             status_map = {
+                400: f"Model {self.config.primary_model} rejected probe (bad request)",
                 401: "Invalid API key",
                 403: f"Model {self.config.primary_model} not allowed for this key",
                 404: f"Endpoint not found: {self.config.base_url}",
@@ -326,24 +331,27 @@ class LLMClient:
         json_mode: bool,
     ) -> LLMResponse:
         """Make a single API call."""
-        
+
         # Use Anthropic adapter if configured
         if self._anthropic:
             data = self._anthropic.chat_completion(model, messages, max_tokens, temperature, json_mode)
         else:
-            # Original OpenAI logic
+            # OpenAI-compatible path
             # Copy messages to avoid mutating the caller's list (important for
             # retries and model-fallback — each attempt must start from the
             # original, un-modified messages).
             msgs = [dict(m) for m in messages]
+            is_new_param = any(model.startswith(prefix) for prefix in _NEW_PARAM_MODELS)
             body: dict[str, Any] = {
                 "model": model,
                 "messages": msgs,
-                "temperature": temperature,
             }
+            # gpt-5 and o3-family models reject temperature parameter
+            if not is_new_param:
+                body["temperature"] = temperature
 
             # Use correct token parameter based on model
-            if any(model.startswith(prefix) for prefix in _NEW_PARAM_MODELS):
+            if is_new_param:
                 reasoning_min = 32768
                 body["max_completion_tokens"] = max(max_tokens, reasoning_min)
             else:

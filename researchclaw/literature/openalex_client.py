@@ -52,6 +52,7 @@ def search_openalex(
     limit: int = 20,
     year_min: int = 0,
     email: str = _POLITE_EMAIL,
+    api_key: str = "",
 ) -> list[Paper]:
     """Search OpenAlex for papers matching *query*.
 
@@ -99,6 +100,8 @@ def search_openalex(
     }
     if filters:
         params["filter"] = ",".join(filters)
+    if api_key:
+        params["api_key"] = api_key
 
     url = f"{_BASE_URL}?{urllib.parse.urlencode(params)}"
     data = _request_with_retry(url, email)

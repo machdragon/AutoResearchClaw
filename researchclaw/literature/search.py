@@ -31,9 +31,8 @@ from researchclaw.literature.semantic_scholar import search_semantic_scholar
 
 logger = logging.getLogger(__name__)
 
-# OpenAlex first (10K/day), then S2 (1K/5min), then arXiv (1/3s) — least
-# pressure on the most restrictive API.
-_DEFAULT_SOURCES = ("openalex", "semantic_scholar", "arxiv")
+# OpenAlex first (10K/day), then arXiv (1/3s) — S2 requires institutional email for API key.
+_DEFAULT_SOURCES = ("openalex", "arxiv")
 
 
 CacheGet = Callable[[str, str, int], list[dict[str, object]] | None]
@@ -109,6 +108,7 @@ def search_papers(
     year_min: int = 0,
     deduplicate: bool = True,
     s2_api_key: str = "",
+    openalex_api_key: str = "",
 ) -> list[Paper]:
     """Search multiple academic sources and return deduplicated results.
 
@@ -126,6 +126,8 @@ def search_papers(
         Whether to remove duplicates across sources.
     s2_api_key:
         Optional Semantic Scholar API key.
+    openalex_api_key:
+        Optional OpenAlex API key for higher rate limits.
 
     Returns
     -------
@@ -151,6 +153,7 @@ def search_papers(
                     query,
                     limit=limit,
                     year_min=year_min,
+                    api_key=openalex_api_key,
                 )
                 all_papers.extend(papers)
                 cache_put(query, "openalex", limit, _papers_to_dicts(papers))
@@ -237,6 +240,7 @@ def search_papers_multi_query(
     sources: Sequence[str] = _DEFAULT_SOURCES,
     year_min: int = 0,
     s2_api_key: str = "",
+    openalex_api_key: str = "",
     inter_query_delay: float = 1.5,
 ) -> list[Paper]:
     """Run multiple queries and return deduplicated union.
@@ -254,6 +258,7 @@ def search_papers_multi_query(
             sources=sources,
             year_min=year_min,
             s2_api_key=s2_api_key,
+            openalex_api_key=openalex_api_key,
             deduplicate=False,  # we dedup globally below
         )
         all_papers.extend(results)

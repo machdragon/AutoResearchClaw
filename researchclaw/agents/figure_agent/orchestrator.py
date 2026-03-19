@@ -204,7 +204,7 @@ class FigureOrchestrator(AgentOrchestrator):
         """
         t0 = time.monotonic()
         topic = context.get("topic", "")
-        output_dir = Path(context.get("output_dir", "charts"))
+        output_dir = Path(context.get("output_dir", "charts")).resolve()
         output_dir.mkdir(parents=True, exist_ok=True)
 
         self.logger.info("FigureAgent starting for: %s", topic[:80])
