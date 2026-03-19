@@ -187,20 +187,20 @@ def _sanitize_latex_output(
 
     # 2c. Unicode math symbols → LaTeX commands (prevents pdflatex Unicode errors)
     _UNICODE_MATH = {
-        '∈': r'\in{}', '∉': r'\notin{}', '⊆': r'\subseteq{}', '⊂': r'\subset{}',
-        '∪': r'\cup{}', '∩': r'\cap{}', '∅': r'\emptyset{}',
-        '≤': r'\leq{}', '≥': r'\geq{}', '≠': r'\neq{}', '≈': r'\approx{}',
-        '→': r'\rightarrow{}', '←': r'\leftarrow{}', '↔': r'\leftrightarrow{}',
-        '∀': r'\forall{}', '∃': r'\exists{}',
-        '∑': r'\sum{}', '∏': r'\prod{}', '∫': r'\int{}',
-        '√': r'\sqrt{}', '∞': r'\infty{}', '·': r'\cdot{}',
-        '×': r'\times{}', '÷': r'\div{}', '±': r'\pm{}',
-        '∇': r'\nabla{}', '∂': r'\partial{}', '∝': r'\propto{}',
-        'α': r'\alpha{}', 'β': r'\beta{}', 'γ': r'\gamma{}', 'δ': r'\delta{}',
-        'ε': r'\varepsilon{}', 'θ': r'\theta{}', 'λ': r'\lambda{}',
-        'μ': r'\mu{}', 'π': r'\pi{}', 'σ': r'\sigma{}', 'τ': r'\tau{}',
-        'φ': r'\phi{}', 'ψ': r'\psi{}', 'ω': r'\omega{}',
-        'Γ': r'\Gamma{}', 'Δ': r'\Delta{}', 'Σ': r'\Sigma{}', 'Ω': r'\Omega{}',
+        '∈': r'\in ', '∉': r'\notin ', '⊆': r'\subseteq ', '⊂': r'\subset ',
+        '∪': r'\cup ', '∩': r'\cap ', '∅': r'\emptyset ',
+        '≤': r'\leq ', '≥': r'\geq ', '≠': r'\neq ', '≈': r'\approx ',
+        '→': r'\rightarrow ', '←': r'\leftarrow ', '↔': r'\leftrightarrow ',
+        '∀': r'\forall ', '∃': r'\exists ',
+        '∑': r'\sum ', '∏': r'\prod ', '∫': r'\int ',
+        '√': r'\surd ', '∞': r'\infty ', '·': r'\cdot ',
+        '×': r'\times ', '÷': r'\div ', '±': r'\pm ',
+        '∇': r'\nabla ', '∂': r'\partial ', '∝': r'\propto ',
+        'α': r'\alpha ', 'β': r'\beta ', 'γ': r'\gamma ', 'δ': r'\delta ',
+        'ε': r'\varepsilon ', 'θ': r'\theta ', 'λ': r'\lambda ',
+        'μ': r'\mu ', 'π': r'\pi ', 'σ': r'\sigma ', 'τ': r'\tau ',
+        'φ': r'\phi ', 'ψ': r'\psi ', 'ω': r'\omega ',
+        'Γ': r'\Gamma ', 'Δ': r'\Delta ', 'Σ': r'\Sigma ', 'Ω': r'\Omega ',
     }
     for uc, cmd in _UNICODE_MATH.items():
         tex = tex.replace(uc, cmd)
