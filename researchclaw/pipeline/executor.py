@@ -3123,6 +3123,7 @@ def _execute_code_generation(
         "mistral", "phi-", "gemma", "pretraining", "tokeniz",
     )
     topic_lower = config.research.topic.lower()
+    allow_subprocess = "parameter golf" in topic_lower
     is_llm_topic = any(kw in topic_lower for kw in _llm_keywords)
 
     # --- I-08: RL topic detection and step guidance ---
@@ -3523,7 +3524,7 @@ def _execute_code_generation(
         # Skip non-Python files (requirements.txt, setup.py, etc.)
         if not fname.endswith(".py"):
             continue
-        validation = validate_code(code)
+        validation = validate_code(code, allow_subprocess=allow_subprocess)
         repair_attempt = 0
         while not validation.ok and llm is not None and repair_attempt < max_repair:
             repair_attempt += 1
@@ -3555,7 +3556,10 @@ def _execute_code_generation(
             )
             resp = _chat_with_prompt(llm, rp.system, rp.user)
             files[fname] = _extract_code_block(resp.content)
-            validation = validate_code(files[fname])
+            validation = validate_code(
+                files[fname],
+                allow_subprocess=allow_subprocess,
+            )
         if not validation.ok:
             all_valid = False
             # BUG-14: Log remaining issues prominently
@@ -3568,7 +3572,7 @@ def _execute_code_generation(
     if not all_valid:
         _has_critical = False
         for fname, code in files.items():
-            _v = validate_code(code)
+            _v = validate_code(code, allow_subprocess=allow_subprocess)
             if not _v.ok:
                 for issue in _v.issues:
                     if issue.severity == "error" and issue.category in (
@@ -3742,7 +3746,7 @@ def _execute_code_generation(
 
     # --- P1.4: LLM Code Review (Stage 10.5) ---
     # Skip when CodeAgent is active — Phase 4 review already covers this.
-    if llm is not None and not _code_agent_active:
+    if llm is not None and not _code_agent_active and not allow_subprocess:
         all_code_review = "\n\n".join(
             f"# --- {fname} ---\n{code}" for fname, code in files.items()
         )
@@ -3857,7 +3861,7 @@ def _execute_code_generation(
     # --- FIX-3: Topic-experiment alignment check ---
     alignment_ok = True
     alignment_note = ""
-    if llm is not None:
+    if llm is not None and not allow_subprocess:
         # Concatenate all code for alignment check
         all_code_for_check = "\n\n".join(
             f"# --- {fname} ---\n{code}" for fname, code in files.items()
@@ -3927,7 +3931,12 @@ def _execute_code_generation(
 
     # --- FIX-7: Ablation distinctness check ---
     main_code = files.get("main.py", "")
-    if llm is not None and main_code and "condition" in main_code.lower():
+    if (
+        llm is not None
+        and not allow_subprocess
+        and main_code
+        and "condition" in main_code.lower()
+    ):
         try:
             ablation_prompt = (
                 f"Examine this experiment code:\n```python\n{main_code[:6000]}\n```\n\n"
@@ -3995,7 +4004,10 @@ def _execute_code_generation(
 
     # --- Write spec ---
     file_list = ", ".join(f"`{f}`" for f in sorted(files.keys()))
-    main_validation = validate_code(files.get("main.py", ""))
+    main_validation = validate_code(
+        files.get("main.py", ""),
+        allow_subprocess=allow_subprocess,
+    )
     _align_status = "ALIGNED" if alignment_ok else f"MISALIGNED: {alignment_note}"
     spec = f"""# Experiment Specification
 
@@ -4391,6 +4403,7 @@ def _execute_iterative_refine(
 
     metric_key = config.experiment.metric_key
     metric_direction = config.experiment.metric_direction
+    allow_subprocess = "parameter golf" in config.research.topic.lower()
 
     # P9: Detect metric direction mismatch between config and experiment code.
     # The code-gen stage instructs experiments to print a line like:
@@ -4621,6 +4634,35 @@ def _execute_iterative_refine(
             parts.append(f"```filename:{fname}\n{code}\n```")
         return "\n\n".join(parts)
 
+    if allow_subprocess:
+        logger.info(
+            "Stage 13: Parameter Golf topic detected — skipping iterative "
+            "LLM rewrites to preserve real harness execution code"
+        )
+        final_dir = stage_dir / "experiment_final"
+        _write_project(final_dir, best_files)
+        if "main.py" in best_files:
+            (stage_dir / "experiment_final.py").write_text(
+                best_files["main.py"], encoding="utf-8"
+            )
+        log.update(
+            {
+                "converged": True,
+                "stop_reason": "parameter_golf_skip_iterative_rewrite",
+                "best_metric": best_metric,
+                "best_version": best_version,
+            }
+        )
+        (stage_dir / "refinement_log.json").write_text(
+            json.dumps(log, indent=2), encoding="utf-8"
+        )
+        return StageResult(
+            stage=Stage.ITERATIVE_REFINE,
+            status=StageStatus.DONE,
+            artifacts=("refinement_log.json", "experiment_final/"),
+            evidence_refs=(),
+        )
+
     if llm is None:
         logger.info("Stage 13: LLM unavailable, saving original experiment as final")
         final_dir = stage_dir / "experiment_final"
@@ -4793,7 +4835,7 @@ def _execute_iterative_refine(
 
         # Validate main.py
         main_code = candidate_files.get("main.py", "")
-        validation = validate_code(main_code)
+        validation = validate_code(main_code, allow_subprocess=allow_subprocess)
         issue_text = ""
         repaired = False
 
@@ -4811,7 +4853,10 @@ def _execute_iterative_refine(
             )
             repair_response = _chat_with_prompt(llm, irp.system, irp.user)
             candidate_files["main.py"] = _extract_code_block(repair_response.content)
-            validation = validate_code(candidate_files["main.py"])
+            validation = validate_code(
+                candidate_files["main.py"],
+                allow_subprocess=allow_subprocess,
+            )
             repaired = True
 
         # Save version directory

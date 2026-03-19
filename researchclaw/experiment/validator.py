@@ -209,8 +209,9 @@ COMMON_SCIENCE: frozenset[str] = frozenset(
 class _SecurityVisitor(ast.NodeVisitor):
     """Walk AST to detect dangerous calls and imports."""
 
-    def __init__(self) -> None:
+    def __init__(self, *, allow_subprocess: bool = False) -> None:
         self.issues: list[ValidationIssue] = []
+        self._allow_subprocess = allow_subprocess
 
     # -- function calls --
 
@@ -227,6 +228,9 @@ class _SecurityVisitor(ast.NodeVisitor):
                 )
             )
         elif name in DANGEROUS_CALLS:
+            if self._allow_subprocess and name.startswith("subprocess."):
+                self.generic_visit(node)
+                return
             self.issues.append(
                 ValidationIssue(
                     severity="error",
@@ -243,6 +247,8 @@ class _SecurityVisitor(ast.NodeVisitor):
     def visit_Import(self, node: ast.Import) -> None:
         for alias in node.names:
             top = alias.name.split(".")[0]
+            if self._allow_subprocess and top == "subprocess":
+                continue
             if top in BANNED_MODULES:
                 self.issues.append(
                     ValidationIssue(
@@ -257,6 +263,9 @@ class _SecurityVisitor(ast.NodeVisitor):
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
         if node.module:
             top = node.module.split(".")[0]
+            if self._allow_subprocess and top == "subprocess":
+                self.generic_visit(node)
+                return
             if top in BANNED_MODULES:
                 self.issues.append(
                     ValidationIssue(
@@ -329,7 +338,11 @@ def validate_syntax(code: str) -> CodeValidation:
     return result
 
 
-def validate_security(code: str) -> CodeValidation:
+def validate_security(
+    code: str,
+    *,
+    allow_subprocess: bool = False,
+) -> CodeValidation:
     """Scan *code* AST for dangerous calls and imports."""
     result = CodeValidation()
     try:
@@ -337,7 +350,7 @@ def validate_security(code: str) -> CodeValidation:
     except SyntaxError:
         # If can't parse, skip security — syntax check will catch it.
         return result
-    visitor = _SecurityVisitor()
+    visitor = _SecurityVisitor(allow_subprocess=allow_subprocess)
     visitor.visit(tree)
     result.issues.extend(visitor.issues)
     return result
@@ -375,6 +388,7 @@ def validate_code(
     available_packages: set[str] | None = None,
     skip_security: bool = False,
     skip_imports: bool = False,
+    allow_subprocess: bool = False,
 ) -> CodeValidation:
     """Run all validations and return a combined :class:`CodeValidation`.
 
@@ -393,7 +407,7 @@ def validate_code(
 
     # 2. Security
     if not skip_security:
-        security = validate_security(code)
+        security = validate_security(code, allow_subprocess=allow_subprocess)
         combined.issues.extend(security.issues)
 
     # 3. Import availability
