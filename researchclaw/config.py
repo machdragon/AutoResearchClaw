@@ -206,6 +206,7 @@ class DockerSandboxConfig:
     shm_size_mb: int = 2048
     container_python: str = "/usr/bin/python3"
     keep_containers: bool = False
+    extra_volumes: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -640,6 +641,7 @@ def _parse_experiment_config(data: dict[str, Any]) -> ExperimentConfig:
             shm_size_mb=int(docker_data.get("shm_size_mb", 2048)),
             container_python=docker_data.get("container_python", "/usr/bin/python3"),
             keep_containers=bool(docker_data.get("keep_containers", False)),
+            extra_volumes=tuple(docker_data.get("extra_volumes", [])),
         ),
         ssh_remote=SshRemoteConfig(
             host=ssh_data.get("host", ""),
