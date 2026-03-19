@@ -37,6 +37,18 @@ from researchclaw.experiment.validator import (
 logger = logging.getLogger(__name__)
 
 
+def _parameter_golf_harness_gate_violations(main_py: str) -> list[str]:
+    """Return missing patterns for Parameter Golf sandbox harness (Stage 10 static gate)."""
+    miss: list[str] = []
+    if "subprocess" not in main_py:
+        miss.append("subprocess")
+    if "torchrun" not in main_py:
+        miss.append("torchrun")
+    if "train_gpt" not in main_py:
+        miss.append("train_gpt.py")
+    return miss
+
+
 # ---------------------------------------------------------------------------
 # Domain detection — maps research topic to academic domain & venue context
 # ---------------------------------------------------------------------------
@@ -3858,10 +3870,45 @@ def _execute_code_generation(
         except Exception as exc:
             logger.debug("Code review failed: %s", exc)
 
+    # --- Parameter Golf: static harness gate (subprocess + torchrun + train_gpt) ---
+    if allow_subprocess:
+        _mpg = files.get("main.py", "")
+        _pg_miss = _parameter_golf_harness_gate_violations(_mpg)
+        if _pg_miss and llm is not None:
+            logger.warning(
+                "Stage 10: Parameter Golf harness gate missing %s — regenerating main.py",
+                ", ".join(_pg_miss),
+            )
+            _pg_fix = (
+                "Your main.py FAILED the Parameter Golf static harness check.\n"
+                f"MISSING: {', '.join(_pg_miss)}\n\n"
+                "You MUST use subprocess (e.g. subprocess.run) to invoke torchrun "
+                "with the project train_gpt.py path from the REAL HARNESS template. "
+                "Parse val_bpb from combined stdout+stderr.\n\n"
+                f"{pkg_hint}\n{compute_budget}\nPLAN:\n{exp_plan}\n\n"
+                "Return complete files using ```filename:xxx.py format.\n\n"
+                f"Current main.py:\n```python\n{_mpg[:12000]}\n```"
+            )
+            try:
+                _pg_resp = _chat_with_prompt(
+                    llm,
+                    _pm.prompts["code_generation"]["system"],
+                    _pg_fix,
+                    max_tokens=_code_max_tokens,
+                )
+                _pg_files = _extract_multi_file_blocks(_pg_resp.content)
+                if _pg_files and "main.py" in _pg_files:
+                    files = _pg_files
+                    for fname, code in files.items():
+                        (exp_dir / fname).write_text(code, encoding="utf-8")
+                    logger.info("Stage 10: main.py regenerated after harness gate")
+            except Exception as _pg_exc:
+                logger.debug("Harness gate regen failed: %s", _pg_exc)
+
     # --- FIX-3: Topic-experiment alignment check ---
     alignment_ok = True
     alignment_note = ""
-    if llm is not None and not allow_subprocess:
+    if llm is not None:
         # Concatenate all code for alignment check
         all_code_for_check = "\n\n".join(
             f"# --- {fname} ---\n{code}" for fname, code in files.items()
@@ -3869,24 +3916,51 @@ def _execute_code_generation(
         # Truncate to avoid token overflow
         if len(all_code_for_check) > 8000:
             all_code_for_check = all_code_for_check[:8000] + "\n... [truncated]"
-        align_prompt = (
-            f"Research topic: {config.research.topic}\n\n"
-            f"Experiment code:\n```python\n{all_code_for_check}\n```\n\n"
-            "TASK: Evaluate whether this experiment code actually tests the "
-            "stated research topic. Answer with JSON:\n"
-            '{"aligned": true/false, "reason": "...", "suggestions": "..."}\n\n'
-            "Check specifically:\n"
-            "- Does the code implement models/methods relevant to the topic?\n"
-            "- If the topic mentions LLMs/transformers/language models, does "
-            "the code use or simulate them (not just small MLPs)?\n"
-            "- If the topic mentions a specific technique (e.g. curriculum "
-            "learning, RLHF), does the code actually implement it?\n"
-            "- Are the experimental conditions meaningfully different from each other?\n"
-        )
+        if allow_subprocess:
+            align_prompt = (
+                f"Research topic: {config.research.topic}\n\n"
+                f"Experiment code:\n```python\n{all_code_for_check}\n```\n\n"
+                "TASK (Parameter Golf sandbox): This project runs the real language "
+                "model training script train_gpt.py via subprocess/torchrun. "
+                "Hyperparameters and techniques (QAT schedules, compression "
+                "regularization, roundtrip eval) are applied inside train_gpt.py "
+                "when environment variables are set — main.py is a thin launcher "
+                "and must NOT duplicate transformer or quantization math.\n\n"
+                "Answer with JSON:\n"
+                '{"aligned": true/false, "reason": "...", "suggestions": "..."}\n\n'
+                "Mark aligned=true if: (1) main.py invokes torchrun or train_gpt.py "
+                "through subprocess, (2) env vars match the lane/hypothesis knobs, "
+                "(3) val_bpb is parsed from process output — unless the code is "
+                "clearly a stub that never runs training or uses fake metrics.\n"
+                "Mark aligned=false only for stubs, simulated scores, or missing "
+                "training invocation.\n"
+            )
+            align_system = (
+                "You review Parameter Golf harness code. Training logic lives in "
+                "train_gpt.py; main.py orchestrates subprocess runs."
+            )
+        else:
+            align_prompt = (
+                f"Research topic: {config.research.topic}\n\n"
+                f"Experiment code:\n```python\n{all_code_for_check}\n```\n\n"
+                "TASK: Evaluate whether this experiment code actually tests the "
+                "stated research topic. Answer with JSON:\n"
+                '{"aligned": true/false, "reason": "...", "suggestions": "..."}\n\n'
+                "Check specifically:\n"
+                "- Does the code implement models/methods relevant to the topic?\n"
+                "- If the topic mentions LLMs/transformers/language models, does "
+                "the code use or simulate them (not just small MLPs)?\n"
+                "- If the topic mentions a specific technique (e.g. curriculum "
+                "learning, RLHF), does the code actually implement it?\n"
+                "- Are the experimental conditions meaningfully different from each other?\n"
+            )
+            align_system = (
+                "You are a scientific code reviewer checking topic-experiment alignment."
+            )
         try:
             align_resp = llm.chat(
                 [{"role": "user", "content": align_prompt}],
-                system="You are a scientific code reviewer checking topic-experiment alignment.",
+                system=align_system,
                 max_tokens=1024,
             )
             align_data = _safe_json_loads(align_resp.content, {})
@@ -3899,19 +3973,34 @@ def _execute_code_generation(
                     alignment_note,
                 )
                 # Attempt one regeneration with explicit alignment instruction
-                regen_prompt = (
-                    f"The experiment code you previously generated does NOT align "
-                    f"with the research topic.\n\n"
-                    f"TOPIC: {config.research.topic}\n"
-                    f"MISALIGNMENT: {alignment_note}\n"
-                    f"SUGGESTIONS: {suggestions}\n\n"
-                    f"REGENERATE the experiment code to DIRECTLY test the stated "
-                    f"topic. The code MUST implement the core technique described "
-                    f"in the topic, not a generic proxy.\n\n"
-                    f"{pkg_hint}\n{compute_budget}\n"
-                    f"PLAN:\n{exp_plan}\n\n"
-                    f"Return multiple files using ```filename:xxx.py format."
-                )
+                if allow_subprocess:
+                    regen_prompt = (
+                        f"The experiment code was judged misaligned with the topic.\n\n"
+                        f"TOPIC: {config.research.topic}\n"
+                        f"MISALIGNMENT: {alignment_note}\n"
+                        f"SUGGESTIONS: {suggestions}\n\n"
+                        f"REGENERATE main.py for Parameter Golf: use subprocess to "
+                        f"run torchrun on train_gpt.py, set lane env vars (QAT, "
+                        f"compression, etc.) — the training script owns the technique; "
+                        f"main.py must not use fake metrics.\n\n"
+                        f"{pkg_hint}\n{compute_budget}\n"
+                        f"PLAN:\n{exp_plan}\n\n"
+                        f"Return multiple files using ```filename:xxx.py format."
+                    )
+                else:
+                    regen_prompt = (
+                        f"The experiment code you previously generated does NOT align "
+                        f"with the research topic.\n\n"
+                        f"TOPIC: {config.research.topic}\n"
+                        f"MISALIGNMENT: {alignment_note}\n"
+                        f"SUGGESTIONS: {suggestions}\n\n"
+                        f"REGENERATE the experiment code to DIRECTLY test the stated "
+                        f"topic. The code MUST implement the core technique described "
+                        f"in the topic, not a generic proxy.\n\n"
+                        f"{pkg_hint}\n{compute_budget}\n"
+                        f"PLAN:\n{exp_plan}\n\n"
+                        f"Return multiple files using ```filename:xxx.py format."
+                    )
                 regen_resp = _chat_with_prompt(
                     llm,
                     system=_pm.prompts["code_generation"]["system"],
