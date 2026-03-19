@@ -47,7 +47,7 @@ def test_main_with_no_args_returns_zero_and_prints_help(
     assert "usage:" in captured.out
 
 
-@pytest.mark.parametrize("argv", [["run", "--help"], ["validate", "--help"]])
+@pytest.mark.parametrize("argv", [["run", "--help"], ["validate", "--help"], ["snapshot", "--help"]])
 def test_help_subcommands_exit_zero(argv: list[str]) -> None:
     with pytest.raises(SystemExit) as exc_info:
         rc_cli.main(argv)
@@ -144,6 +144,32 @@ def test_main_dispatches_validate_command(monkeypatch: pytest.MonkeyPatch) -> No
     parsed = captured["args"]
     assert parsed.config == "cfg.yaml"
     assert parsed.no_check_paths is True
+
+
+def test_main_dispatches_snapshot_command(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured = {}
+
+    def fake_cmd_snapshot(args):
+        captured["args"] = args
+        return 0
+
+    monkeypatch.setattr(rc_cli, "cmd_snapshot", fake_cmd_snapshot)
+    code = rc_cli.main(
+        [
+            "snapshot",
+            "--artifacts-root",
+            "my-artifacts",
+            "--output-root",
+            "my-snapshots",
+            "--top",
+            "5",
+        ]
+    )
+    assert code == 0
+    parsed = captured["args"]
+    assert parsed.artifacts_root == "my-artifacts"
+    assert parsed.output_root == "my-snapshots"
+    assert parsed.top == 5
 
 
 @pytest.mark.parametrize(
