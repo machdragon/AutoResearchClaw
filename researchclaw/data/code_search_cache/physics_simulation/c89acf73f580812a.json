@@ -1,0 +1,65 @@
+{
+  "api_patterns": [
+    "from pathlib import Path\nimport logging\n\nlogger = logging.getLogger(__name__)\n_PROFILES_DIR = Path(__file__).parent / \"profiles\"",
+    "from enum import Enum\n\nclass ExperimentParadigm(str, Enum):\n    COMPARISON = \"comparison\"\n    SIMULATION = \"simulation\"",
+    "from dataclasses import dataclass\n\n@dataclass\nclass DomainProfile:\n    name: str\n    description: str",
+    "import yaml\n\nwith open(config_path, \"r\") as f:\n    config = yaml.safe_load(f)\nprofile = DomainProfile(**config)",
+    "import numpy as np\n\nvalues = np.linspace(-1.0, 1.0, 100)\nmu = 0.1\ncorrected = np.array([polymer_correction(v, mu) for v in values])",
+    "from math import sin, cos\n\nmu_value = mu * value\nif abs(mu_value) < 1e-10:\n    return value * (1 - mu_value**2/6 + mu_value**4/120)\nreturn sin(mu_value) / mu",
+    "def inverse_polymer_correction(corrected_value, mu, max_iter=100, tol=1e-12):\n    x = corrected_value\n    for _ in range(max_iter):\n        fx = sin(mu * x) / mu - corrected_value\n        fpx = cos(mu * x)\n        x_new = x - fx / fpx",
+    "import bz2\n\nwith bz2.open(\"trajectory.xml.bz2\", \"rt\") as f:\n    xml_data = f.read()",
+    "import xml.etree.ElementTree as ET\n\ntree = ET.parse(\"input.xml\")\nroot = tree.getroot()\nfor elem in root.findall(\"system\"):\n    print(elem.attrib)",
+    "import ase.io\n\natoms = ase.io.read(\"structure.xyz\")\nase.io.write(\"out.xyz\", atoms)",
+    "import chemiscope\n\nchemiscope.write_input(\n    \"data/chemiscope.json\",\n    frames=[atoms],\n    properties={\"energy\": energies},\n)",
+    "import matplotlib.pyplot as plt\n\nplt.plot(time, observable)\nplt.xlabel(\"time [fs]\")\nplt.ylabel(\"observable\")\nplt.tight_layout()\nplt.show()",
+    "import streamlit as st\nimport pandas as pd\n\nst.set_page_config(initial_sidebar_state=\"collapsed\")\nst.write(\"# Skills Chart\")\ndf = pd.DataFrame(skills)\nst.dataframe(df, use_container_width=True)",
+    "selection = st.pills(\n    \"Skills\",\n    options=skills.keys(),\n    selection_mode=\"multi\",\n)\nst.write(f\"You selected: {selection}\")",
+    "import plotly.graph_objects as go\n\nfig = go.Figure()\nfig.add_trace(go.Scatterpolar(r=r_values, theta=theta_values, fill=\"toself\"))\nfig.update_layout(polar=dict(radialaxis=dict(visible=True)))\nst.plotly_chart(fig, use_container_width=True)",
+    "import time\n\nstart = time.time()\nrun_simulation()\nend = time.time()\nprint(f\"Simulation time: {end - start:.3f} s\")",
+    "from scipy import stats\n\nsamples = np.random.randn(1000)\nmean, var = stats.norm.fit(samples)\nprint(\"Fitted mean:\", mean)"
+  ],
+  "file_structure": {
+    "domain_detection.py": "Defines ExperimentParadigm and MetricType enums and a DomainProfile dataclass; handles loading of YAML-based domain profiles and domain detection logic using logging and filesystem paths.",
+    "polymer_quantization.py": "Implements polymer quantization corrections for classical quantities using trigonometric functions, including forward and inverse corrections with Newton-Raphson iteration.",
+    "path_integral_metadynamics_example.py": "End-to-end example script showing path integral molecular dynamics with metadynamics; orchestrates external i-PI and PLUMED tools, loads trajectories, and analyzes results with ase, chemiscope, numpy, and matplotlib.",
+    "skills_chart_app.py": "Streamlit web app that collects skill selections via interactive UI components and visualizes proficiency using a Plotly radar (polar) chart.",
+    "neuromorphic_gamma_tests.py": "Analysis script for neuromorphic computing regimes; organizes multiple verification tests, computes statistics with numpy and scipy, and visualizes gamma-related behavior with matplotlib."
+  },
+  "evaluation_patterns": [
+    "Newton-Raphson convergence for inverse transforms:\n- Initialize x = corrected_value.\n- Iterate up to max_iter:\n  - Compute fx = sin(mu * x) / mu - corrected_value.\n  - Compute derivative fpx = cos(mu * x).\n  - Update x_new = x - fx / fpx.\n  - Stop when |fx| < tol or |x_new - x| < tol.\n- Return final x as the recovered classical value.",
+    "Simulation timing and performance evaluation:\n- Record start = time.time() before launching an external simulation (e.g., i-PI driver or PLUMED metadynamics run).\n- Run the subprocess or MD loop.\n- Record end = time.time() afterwards and report elapsed wall-clock time as a scalar metric (seconds).",
+    "Statistical fitting and summary metrics:\n- Generate or collect samples (e.g., from neuromorphic \u03b3 simulations) into a NumPy array.\n- Use stats.norm.fit(samples) to obtain maximum-likelihood mean and variance parameters.\n- Report fitted parameters and potentially compare them across architectures or runs.",
+    "Visual evaluation via curves and free-energy profiles:\n- Accumulate observables (energies, collective variables, free energies) along simulation time steps into NumPy arrays.\n- Plot observable vs. time or collective variable using matplotlib.\n- Use axes labels and legends to contextualize convergence or hysteresis, then visually inspect smoothness and stability.",
+    "Interactive evaluation dashboards:\n- Build a pandas DataFrame capturing categories and computed proficiencies or scores.\n- Render the DataFrame as a table in Streamlit for quick inspection.\n- Compute normalized scores (e.g., percentage of selected skills per category) and display them in a polar/radar Plotly chart for comparative assessment across dimensions."
+  ],
+  "library_versions": {
+    "yaml": ">=6.0",
+    "numpy": ">=1.24",
+    "matplotlib": ">=3.7",
+    "scipy": ">=1.11",
+    "ase": ">=3.22",
+    "chemiscope": ">=0.9",
+    "ipi": ">=2.6",
+    "streamlit": ">=1.33",
+    "pandas": ">=2.1",
+    "plotly": ">=5.20",
+    "xml.etree.ElementTree": "builtin",
+    "bz2": "builtin",
+    "logging": "builtin",
+    "pathlib": "builtin",
+    "dataclasses": "builtin (Python >=3.7)"
+  },
+  "repos": [],
+  "queries": [
+    "jax numpy byte packing quantized weights",
+    "computational physics simulation weight quantization numpy",
+    "byte grouped serialization compression jax numpy",
+    "val bpb compression experiment jax",
+    "numpy scipy simulation model checkpoint compression",
+    "molecular dynamics python",
+    "N-body simulation numpy"
+  ],
+  "_cached_at": 1773953331.3756342,
+  "_domain_id": "physics_simulation",
+  "_topic_hash": "c89acf73f580812a"
+}

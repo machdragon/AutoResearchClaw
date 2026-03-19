@@ -94,3 +94,6 @@ scripts/md2pdf.py
 docs/tasks/
 docs/feature_expansion_analysis.*
 docs/tester_guide_cn.*
+
+# Local project config (contains API keys / local paths)
+opencode.jsonc
