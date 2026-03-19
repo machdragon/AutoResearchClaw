@@ -1,0 +1,17 @@
+{
+  "generated": "2026-03-19T23:30:31+00:00",
+  "mode": "sandbox",
+  "metric_key": "val_bpb",
+  "metric_direction": "minimize",
+  "max_iterations_requested": 2,
+  "max_iterations_executed": 2,
+  "baseline_metric": 3.3919,
+  "project_files": [
+    "main.py"
+  ],
+  "iterations": [],
+  "converged": true,
+  "stop_reason": "parameter_golf_skip_iterative_rewrite",
+  "best_metric": 3.3919,
+  "best_version": "experiment/"
+}

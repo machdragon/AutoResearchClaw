@@ -1,0 +1,6 @@
+{
+  "decision": "refine",
+  "raw_text_excerpt": "## Decision\n\nREFINE\n\n## Justification\n\n- The core hypotheses (roundtrip-aware QAT + compression regularization) are still **plausible** and not falsified by the current data; we simply have **no reliable causal evidence** yet.\n- Multiple MINIMUM QUALITY CRITERIA for PROCEED are violated:\n  - Only **one candidate run**; no \u22653 seeds per condition.\n  - Only **one baseline** is effectively present, and even that is not a clearly separate, controlled run.\n  - Ablation tool reports **\u201cABALATION FAILUR",
+  "quality_warnings": [],
+  "generated": "2026-03-19T23:38:20+00:00"
+}

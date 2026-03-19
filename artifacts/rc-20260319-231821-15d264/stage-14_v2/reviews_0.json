@@ -1,0 +1,68 @@
+[
+  {
+    "figure_id": "fig_main_results_val_bpb",
+    "passed": true,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The figure uses a bar chart with a single bar to present one scalar metric (val_bpb). For a single-condition result, a text table or inline numeric reporting is often clearer; if comparison is intended (e.g., baseline vs QAT+roundtrip), the comparative condition is missing from the plot."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Error bars are computed but the confidence interval values are identical to the mean (ci_low = ci_high = value), so the error bars have zero extent. This may confuse reviewers by suggesting uncertainty information that is not actually present."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The x-axis tick label 'metrics' is not very informative for a figure meant to compare training regimes. A more descriptive category name (e.g., 'Float baseline', 'QAT+roundtrip') would better communicate the experimental condition."
+      }
+    ],
+    "issue_count": 3
+  },
+  {
+    "figure_id": "fig_runtime_quick_gate",
+    "passed": true,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The figure title and caption describe both absolute runtime and a runtime ratio vs. baseline with a dashed 1.10× threshold and a quick_gate_passed indicator, but the plotted data only show a single bar for runtime values and symmetric zero-width error bars. There is no explicit baseline, no ratio axis or ratio values, no dashed reference line at 1.10×, and no quick-gate indicator. The chart type (single bar) is also under-informative for a runtime comparison."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "No legend is provided. Given the caption mentions multiple semantic elements (baseline vs. candidate, runtime ratio, quick_gate_passed indicator, threshold line), a legend or clear in-plot annotations would be needed to distinguish them."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The y-axis grid is enabled with alpha=0.3, which is generally acceptable, but combined with white bar edges and potentially light background (depending on fallback style), some journals prefer slightly lighter grid lines or no grid for single-bar plots to maintain a cleaner look."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The y-axis label states 'Runtime (ms) and runtime ratio (× baseline)' but the plotted data correspond only to a single set of runtime values. There is no second axis or explicit ratio scale, which can confuse readers."
+      }
+    ],
+    "issue_count": 4
+  },
+  {
+    "figure_id": "fig_delta_bpb_improvement",
+    "passed": true,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The figure uses a bar chart with a single category and no visible confidence interval (ci_low == ci_high == value). For a single metric this could be more cleanly represented as a point (dot) with an error bar or omitted CI, unless visual consistency with other bar charts in the paper is required."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "With only one positive value (3.3919) and no variation, the y-axis scale and visual context might overemphasize an arbitrary absolute level. Consider showing delta around zero (e.g., include y=0 reference line or symmetric limits) to better convey 'change vs. baseline', especially if negative is an improvement as described in the caption."
+      }
+    ],
+    "issue_count": 2
+  }
+]

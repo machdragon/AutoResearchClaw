@@ -1,0 +1,144 @@
+{
+  "section_analysis": [
+    {
+      "heading": "Title",
+      "word_count": 8,
+      "canonical": "",
+      "bullet_density": 0.0,
+      "bullet_status": "ok"
+    },
+    {
+      "heading": "Abstract",
+      "word_count": 205,
+      "canonical": "abstract",
+      "target": [
+        180,
+        220
+      ],
+      "status": "ok",
+      "bullet_density": 0.0,
+      "bullet_status": "ok"
+    },
+    {
+      "heading": "Introduction",
+      "word_count": 950,
+      "canonical": "introduction",
+      "target": [
+        800,
+        1000
+      ],
+      "status": "ok",
+      "bullet_density": 0.33,
+      "bullet_status": "ok"
+    },
+    {
+      "heading": "Related Work",
+      "word_count": 1155,
+      "canonical": "related work",
+      "target": [
+        600,
+        800
+      ],
+      "status": "long",
+      "bullet_density": 0.0,
+      "bullet_status": "ok"
+    },
+    {
+      "heading": "Method",
+      "word_count": 2748,
+      "canonical": "method",
+      "target": [
+        1000,
+        1500
+      ],
+      "status": "long",
+      "bullet_density": 0.0,
+      "bullet_status": "ok"
+    },
+    {
+      "heading": "Experiments",
+      "word_count": 1668,
+      "canonical": "experiments",
+      "target": [
+        800,
+        1200
+      ],
+      "status": "long",
+      "bullet_density": 0.0,
+      "bullet_status": "ok"
+    },
+    {
+      "heading": "Results",
+      "word_count": 993,
+      "canonical": "results",
+      "target": [
+        600,
+        800
+      ],
+      "status": "ok",
+      "bullet_density": 0.0,
+      "bullet_status": "ok"
+    },
+    {
+      "heading": "Discussion",
+      "word_count": 865,
+      "canonical": "discussion",
+      "target": [
+        400,
+        600
+      ],
+      "status": "long",
+      "bullet_density": 0.0,
+      "bullet_status": "ok"
+    },
+    {
+      "heading": "Limitations",
+      "word_count": 458,
+      "canonical": "limitations",
+      "target": [
+        200,
+        300
+      ],
+      "status": "long",
+      "bullet_density": 0.0,
+      "bullet_status": "ok"
+    },
+    {
+      "heading": "Conclusion",
+      "word_count": 123,
+      "canonical": "conclusion",
+      "target": [
+        200,
+        300
+      ],
+      "status": "severely_short",
+      "bullet_density": 0.0,
+      "bullet_status": "ok"
+    }
+  ],
+  "overall_warnings": [
+    "Related Work exceeds target (1155 words, target 600-800)",
+    "Method exceeds target (2748 words, target 1000-1500)",
+    "Experiments exceeds target (1668 words, target 800-1200)",
+    "Discussion exceeds target (865 words, target 400-600)",
+    "Limitations exceeds target (458 words, target 200-300)",
+    "Conclusion is severely under target (123 words, target 200-300)",
+    "Section imbalance: method (2748 words) vs discussion (865 words) — ratio 3.2x",
+    "Only 13 unique citations found (target: >=15 for a full paper)",
+    "Citation recency low: only 3/13 (23%) from last 3 years (target: >=30%%)",
+    "Duplicate adjacent words found: 1 instance(s) (e.g., 'the the', 'is is')",
+    "Related Work is purely descriptive: only 6/47 sentences (13%) contain comparative language (target: >=15%)"
+  ],
+  "revision_directives": [
+    "Compress Related Work from 1155 to 800 words or fewer.",
+    "Compress Method from 2748 to 1500 words or fewer.",
+    "Compress Experiments from 1668 to 1200 words or fewer.",
+    "Compress Discussion from 865 to 600 words or fewer.",
+    "Compress Limitations from 458 to 300 words or fewer.",
+    "EXPAND Conclusion from 123 to 200+ words. Add substantive content — do NOT pad with filler.",
+    "Rebalance sections: expand discussion and/or compress method to achieve more even section lengths.",
+    "Add more references — a top-venue paper typically cites 25-40 works. Currently only 13 unique citations.",
+    "Fix duplicate adjacent words (likely typos).",
+    "REWRITE Related Work to critically compare with prior methods. Use phrases like 'unlike X, our approach...', 'in contrast to...', 'while X focuses on... we address...' for at least 20% of sentences."
+  ]
+}

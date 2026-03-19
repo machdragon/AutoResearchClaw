@@ -1,0 +1,44 @@
+[
+  {
+    "figure_id": "fig_main_results_val_bpb",
+    "passed": true,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Figure and savefig DPI are set to 300, which is acceptable for publication; consider 400–600 DPI if the journal/venue requires higher resolution or if the figure will be scaled down significantly."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Title (12 pt), axis labels (10 pt), and tick labels (9 pt) are within typical NeurIPS/ICML/ICLR expectations and should be readable when printed. However, on a small figure size (3.5x3.0 in), the 9 pt tick labels and 8 pt caption may be borderline small when the figure is further shrunk in the paper; consider slightly increasing font sizes (e.g., base font.size 11–12, ticks 10, caption 9) if space allows."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The color palette explicitly uses non-default, colorblind-friendly hex colors (blue #4477AA and red #EE6677). This is good practice. If printed in grayscale, the two bars may still be somewhat similar in luminance; adding a distinct hatch pattern per bar could further improve robustness for black-and-white reproduction."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "tight_layout() is used and savefig.bbox is set to 'tight', which is generally good. However, the caption is positioned via fig.text(y=-0.02); with tight_layout and bbox='tight' this can be close to or slightly outside the bounding box in some backends. It likely works but should be visually checked; if cropping occurs, either increase bottom margin (e.g., constrained_layout with pad) or move the caption slightly up (e.g., y≈0.0)."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The script employs science/ieee or seaborn-whitegrid styles, which are generally clean and professional. However, the default grid and axis styling are not explicitly controlled, so appearance may slightly vary depending on which style is actually loaded. For full reproducibility, explicitly configure grid visibility and style (e.g., ax.grid(True, axis='y', linestyle='--', alpha=0.3)) if a grid is desired, or explicitly disable it."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "No legend is provided. With only two bars and descriptive x-tick labels, a legend is not strictly necessary, but many venues prefer explicit encodings. Consider adding a small legend if additional conditions are later added or if the caption is omitted in the final layout."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "A bar chart for two very close scalar values (3.379 vs 3.392) with a highly zoomed-in y-axis (≈±0.5%) can visually exaggerate differences. For expert audiences, consider an alternative such as plotting the absolute values on a less zoomed axis, reporting the numeric difference in text, or using a point/interval plot; this is more statistically honest and avoids misleading interpretation of effect size."
+      }
+    ],
+    "issue_count": 7
+  }
+]

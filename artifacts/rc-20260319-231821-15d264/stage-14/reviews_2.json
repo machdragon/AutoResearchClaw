@@ -1,0 +1,101 @@
+[
+  {
+    "figure_id": "fig_main_results_comparison",
+    "passed": false,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "critical",
+        "message": "The script is truncated at the last line (`ax.plot([x1, x1], [y_mi`), so the figure code as provided will not run. Ensure the delta-annotation plotting lines are complete and syntactically valid."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Figure DPI is explicitly set to 300 for both display and saving (`figure.dpi` and `savefig.dpi`), which is appropriate for publication. No changes needed."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Font sizes meet typical publication guidelines: axes.titlesize=12 (≥12pt), axes.labelsize=10 (≥10pt), tick labels and legend at 9pt are borderline but generally acceptable for a 3.5×3.0 inch figure. If the figure will be reduced further in the paper, consider increasing tick and legend font sizes to 10pt."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The script uses a custom, colorblind-safe palette (Okabe–Ito style) rather than default matplotlib colors. This is good practice and should be preserved across the paper for consistency."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The figure uses `constrained_layout=False` but relies on `savefig.bbox='tight'`. Because the legend is below the axes (via `bbox_to_anchor=(0.5, -0.12)`), manually verify that at the final size the legend is not clipped and that spacing is adequate. Using `constrained_layout=True` or `fig.tight_layout()` could reduce risk of clipping."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The y-axis grid is light and dashed (`':'`, alpha=0.7) with `set_axisbelow(True)`, which is clean and professional. Just ensure the selected style (science/ieee or seaborn) does not introduce overly heavy spines or conflicting grids in the final output."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The legend is placed below the axes using `bbox_to_anchor`. This avoids overlap with the bars, which is good. Since the figure is only 3.5 inches wide and 3.0 inches tall, check that the negative vertical offset (-0.12) does not push the legend too close to the page margin or cause clipping when embedded in the paper."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "A bar chart is reasonable for comparing two scalar val_bpb values. However, the absolute difference (≈0.0125) is very small relative to the baseline, and the y-axis is tightly zoomed. Ensure the precise numeric values and/or delta are annotated (as intended with the bracket) so readers do not overinterpret the visual difference."
+      }
+    ],
+    "issue_count": 8
+  },
+  {
+    "figure_id": "fig_runtime_overhead_quick_gate",
+    "passed": false,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "critical",
+        "message": "The script is truncated at `ax2.set_ylim(0.8, max(quick_gate_thr` and will not run as-is. The y-limit and any subsequent layout/saving commands are missing and must be restored."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "`figure.dpi` and `savefig.dpi` are both set to 300, which meets minimum publication standards; consider 400–600 dpi if the figure will be resized or heavily scaled in the paper."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Font sizes are generally adequate (title=12pt, labels=10pt, ticks=9pt, legend=9pt). For small (3.5×3.0 inch) figures that may be reduced in the final PDF, consider slightly larger tick and legend fonts (e.g., 10pt) to ensure readability when printed."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The palette is explicitly colorblind-safe and avoids the default matplotlib colors; this is good. However, the two bar colors plus the ratio line and threshold line may appear visually similar in grayscale. Consider varying line styles more strongly and/or adding light hatching to bars to improve monochrome distinguishability."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "`constrained_layout=False` is used and `tight_layout()` is not called. While `savefig.bbox='tight'` helps, labels and the title may be cramped at 3.5×3.0 inches. Enable `constrained_layout=True` when creating the figure or call `plt.tight_layout()` before saving, especially with twin y-axes."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The script attempts to use the `science`/`ieee` or `seaborn-whitegrid` styles, which are generally clean and professional, but there is no explicit grid configuration. If the fallback is the default matplotlib style (when style loading fails), the visual appearance can degrade (default blue, default grid behavior). Consider setting `ax1.grid(True, axis='y', linewidth=0.5, alpha=0.4)` explicitly and disabling grids on the twin axis for consistency."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Two separate artists (bars on ax1, line and threshold on ax2) have labels, but no combined legend is created. Viewers may not see any legend at all, depending on whether a style adds one implicitly. Explicitly create a combined legend (e.g., `handles1, labels1 = ax1.get_legend_handles_labels(); handles2, labels2 = ax2.get_legend_handles_labels(); ax1.legend(handles1+handles2, labels1+labels2, loc='upper left', frameon=False)`) and ensure it does not overlap the data."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Ratio annotations (e.g., `1.00×`, `1.15×`) are added near the markers but may overlap with the line or each other when the figure is scaled or if more strategies are added. Consider slight horizontal offsets or using `bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.8)` to ensure readability against the plot."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The mixed bar + line chart with a secondary y-axis is a reasonable choice to show absolute runtime and relative ratio. However, with only two strategies, a paired bar plot (one bar for time, one for ratio per strategy) normalized to different axes or a simple bar for time plus textual ratio annotations may be simpler and avoid twin-axis complexity."
+      }
+    ],
+    "issue_count": 9
+  }
+]

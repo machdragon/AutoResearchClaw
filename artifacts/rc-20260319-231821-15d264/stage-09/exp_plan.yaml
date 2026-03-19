@@ -1,0 +1,116 @@
+constraints:
+  dataset:
+    download_in_setup: true
+    name: wikitext-103
+    root: /workspace/data
+  hardware:
+    distributed: false
+    gpus: 1
+  max_artifact_bytes: 16000000
+  max_runtime_factor_vs_baseline: 1.1
+  time_budget_seconds: 1200
+environment:
+  ARTIFACT_SIZE_LIMIT_BYTES: '16000000'
+  BATCH_SIZE: '32'
+  COMPRESSION_REG_ENABLED: '1'
+  COMPRESSION_REG_LAMBDA: 1e-4
+  COMPRESSION_REG_SCOPE: final_proj,embed
+  COMPRESSION_REG_TARGET: teacher
+  CONTEXT_LENGTH: '512'
+  DATASET_NAME: wikitext-103
+  DATA_ROOT: /workspace/data
+  DISTILLATION_ENABLED: '1'
+  DISTILLATION_KD_LAMBDA: '0.5'
+  DISTILLATION_TEACHER_CHECKPOINT: /opt/teachers/lm_teacher_fp32.pt
+  DISTILLATION_TEMPERATURE: '2.0'
+  EVAL_INTERVAL_STEPS: '250'
+  EXPORT_INT8_ZLIB_PATH: /workspace/artifacts/model.int8.ptz
+  LEARNING_RATE: 3e-4
+  LOG_INTERVAL_STEPS: '50'
+  LR_SCHEDULE: cosine
+  MAX_RUNTIME_SECONDS: '1200'
+  MAX_STEPS: '1500'
+  METRIC_PRIMARY: val_bpb
+  OPTIMIZER: adamw
+  QAT_ENABLED: '1'
+  QAT_GROUP_SIZE: '32'
+  QAT_START_FRAC: '0.5'
+  ROUNDTRIP_AWARE_TRAINING: '1'
+  ROUNDTRIP_CODEC: zlib
+  ROUNDTRIP_EVAL_INTERVAL_STEPS: '500'
+  ROUNDTRIP_EVAL_MAX_TENSORS: '4'
+  ROUNDTRIP_INT8_ENABLED: '1'
+  SAVE_BEST_ON: val_bpb
+  SETUP_SCRIPT: /workspace/setup.py
+  TOKENIZER_NAME: gpt2
+  WARMUP_STEPS: '100'
+  WEIGHT_DECAY: '0.01'
+hypothesis_id: H1_codec_guided_qat_roundtrip
+knobs:
+  compression_regularization:
+    enabled: true
+    lambda: 0.0001
+    scope:
+    - final_proj
+    - embed
+    target: teacher
+  data:
+    context_length: 512
+    dataset: wikitext-103
+    tokenizer: gpt2
+  description: 'Single quick-gate candidate implementing full staged QAT + codec-guided
+    compression-aligned training, tuned to stay within ≤1.10× runtime and 16MB artifact
+    cap. This is a concrete instantiation of Hypothesis 1: “codec-guided distillation
+    during QAT improves post-roundtrip val_bpb versus float-only training.”
+
+    '
+  distillation:
+    enabled: true
+    kd_lambda: 0.5
+    teacher_checkpoint: /opt/teachers/lm_teacher_fp32.pt
+    temperature: 2.0
+  evaluation:
+    eval_interval_steps: 250
+    log_interval_steps: 50
+  qat:
+    enabled: true
+    group_size: 32
+    start_frac: 0.5
+  roundtrip_alignment:
+    codec: zlib
+    enabled: true
+    eval_interval_steps: 500
+    eval_max_tensors: 4
+    int8: true
+  training:
+    batch_size: 32
+    learning_rate: 0.0003
+    lr_schedule: cosine
+    max_steps: 1500
+    optimizer: adamw
+    warmup_steps: 100
+    weight_decay: 0.01
+lane_id: lane_3
+run_command: 'torchrun --standalone --nproc_per_node=1 /parameter-golf/train_gpt.py
+
+  '
+success_criteria:
+  comparison_baseline:
+    description: 'Same architecture trained under float-only regime with no QAT or
+      compression-aware regularization, evaluated through the identical int8+zlib
+      export path. This candidate is considered successful if its post-roundtrip val_bpb
+      is strictly lower than that baseline while obeying the runtime and artifact-size
+      constraints.
+
+      '
+    required_improvement: val_bpb_candidate < val_bpb_baseline_float_only_roundtrip
+  direction: minimize
+  primary_metric: val_bpb
+  quick_gate:
+    max_artifact_bytes: 16000000
+    must_improve_bpb: true
+    runtime_factor: 1.1
+topic: 'Parameter Golf val_bpb minimization — lane_3: QAT + roundtrip-aware compression
+  alignment. Hypothesis: If we enable staged QAT aligned to int8+zlib roundtrip, post-roundtrip
+  val_bpb will improve versus float-only training under the same gate budget. Artifact
+  limit 16MB. Quick-gate: runtime <= 1.10x baseline.'

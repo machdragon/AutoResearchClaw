@@ -1,0 +1,31 @@
+{
+  "score_1_to_10": 7.0,
+  "verdict": "accept",
+  "strengths": [
+    "Clear, honest positioning as a single-run negative result; claims are mostly proportional to evidence.",
+    "Very explicit description of the lane_3 setting, deployment operator, and metrics (val_bpb, runtime, quick-gate).",
+    "Methodology and configuration are described in sufficient detail to be reproducible: concrete env vars, QAT hyperparameters, and wiring to the official harness.",
+    "Results are transparently reported directly from the harness, with cross-checked numbers and no aggregation that could mask variability.",
+    "Discussion properly emphasizes deployment-constrained evaluation and the importance of strong baselines and negative results.",
+    "Limitations section is explicit about n=1, lack of ablations, and unknown details of the codec-inspired regularizer.",
+    "No apparent fabrication: all quantitative claims match the provided experiment summary JSON, including deltas and ratios."
+  ],
+  "weaknesses": [
+    "Only a single configuration and single seed are evaluated; this is acknowledged but still makes the paper very thin empirically.",
+    "The codec-inspired regularizer is underspecified: its form is unknown even to the authors in this write-up, which weakens causal interpretation.",
+    "No ablations (e.g., QAT on/off, regularizer on/off, different qat_start_frac or group_size), so it is impossible to disentangle which component hurts performance and runtime.",
+    "No analysis of *why* runtime increases (e.g., where overhead arises in the stack), limiting actionable guidance for others.",
+    "Some framing (e.g., calling this a \"setup\" or \"study\" with \"contributions\") may feel slightly heavy for what is essentially a two-point descriptive comparison.",
+    "Minor technical imprecision: the RTX 5070 Ti GPU mentioned is not a widely recognized SKU, which may raise questions about the exact hardware description.",
+    "Figures are referenced (with file paths) but their generation, plotting code, and availability are not described; for such a minimal experiment, direct tabular reporting would suffice and be more robust."
+  ],
+  "required_actions": [
+    "Clarify the exact status and definition of the codec-inspired regularizer: either (a) give its explicit mathematical or algorithmic form and when it is applied, or (b) state clearly that its implementation is unknown / out of scope and refrain from implying any codec-awareness beyond staged QAT. Adjust claims accordingly.",
+    "Tighten the causal language in Results and Discussion so that conclusions remain strictly descriptive (e.g., say \"under this configuration, we observe\" rather than implying any general statement about QAT or codec-aware training in lane_3).",
+    "Add at least one minimal ablation or, if genuinely impossible, add a short subsection explicitly stating that no QAT-vs-no-QAT or regularizer-on/off ablations were run and that the study should be interpreted as a single configuration sanity check rather than as evidence about QAT in general.",
+    "Clarify the hardware description: either verify and correct the GPU model name or generalize the description (e.g., \"a single NVIDIA RTX-class GPU with ~16 GB VRAM\") to avoid confusion about a nonstandard SKU.",
+    "Remove or tone down language that might overstate the scope of the work (e.g., references to a \"framework\" or \"ablation engines\" in earlier drafts); keep the contribution framed as a small, negative case study with two conditions and no systematic search.",
+    "Either document briefly how the plotted figures were produced (data source, plotting script) or, if these are not actually available to readers, replace them with text and the single table; avoid referencing non-existent or inaccessible plots in a minimal-results paper."
+  ],
+  "generated": "2026-03-19T23:44:06+00:00"
+}

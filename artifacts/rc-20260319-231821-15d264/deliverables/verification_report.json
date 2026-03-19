@@ -1,0 +1,93 @@
+{
+  "summary": {
+    "total": 9,
+    "verified": 8,
+    "suspicious": 1,
+    "hallucinated": 0,
+    "skipped": 0,
+    "integrity_score": 0.889
+  },
+  "results": [
+    {
+      "cite_key": "salesky2021robust",
+      "title": "Robust Open-Vocabulary Translation from Visual Text Representations",
+      "status": "verified",
+      "confidence": 1.0,
+      "method": "doi",
+      "details": "Confirmed via CrossRef: 'Robust Open-Vocabulary Translation from Visual Text Representations'",
+      "relevance_score": 0.0
+    },
+    {
+      "cite_key": "dimitrovski2023aitlas",
+      "title": "AiTLAS: Artificial Intelligence Toolbox for Earth Observation",
+      "status": "verified",
+      "confidence": 1.0,
+      "method": "doi",
+      "details": "Confirmed via CrossRef: 'AiTLAS: Artificial Intelligence Toolbox for Earth Observation'",
+      "relevance_score": 0.1
+    },
+    {
+      "cite_key": "selvan2024pepr",
+      "title": "PePR: Performance Per Resource Unit as a Metric to Promote Small-Scale Deep Learning in Medical Image Analysis",
+      "status": "verified",
+      "confidence": 1.0,
+      "method": "openalex",
+      "details": "Confirmed via OpenAlex: 'PePR: Performance Per Resource Unit as a Metric to Promote Small-Scale Deep Learning in Medical Image Analysis'",
+      "relevance_score": 0.5
+    },
+    {
+      "cite_key": "ma2024imdlbenco",
+      "title": "IMDL-BenCo: A Comprehensive Benchmark and Codebase for Image Manipulation Detection & Localization",
+      "status": "verified",
+      "confidence": 0.917,
+      "method": "openalex",
+      "details": "Confirmed via OpenAlex: 'IMDL-BenCo: A Comprehensive Benchmark and Codebase for Image Manipulation Detection &amp; Localization'",
+      "relevance_score": 0.0
+    },
+    {
+      "cite_key": "li2024vrsbench",
+      "title": "VRSBench: A Versatile Vision-Language Benchmark Dataset for Remote Sensing Image Understanding",
+      "status": "verified",
+      "confidence": 1.0,
+      "method": "openalex",
+      "details": "Confirmed via OpenAlex: 'VRSBench: A Versatile Vision-Language Benchmark Dataset for Remote Sensing Image Understanding'",
+      "relevance_score": 0.0
+    },
+    {
+      "cite_key": "teterwak2023improved",
+      "title": "ERM++: An Improved Baseline for Domain Generalization",
+      "status": "verified",
+      "confidence": 1.0,
+      "method": "openalex",
+      "details": "Confirmed via OpenAlex: 'ERM++: An Improved Baseline for Domain Generalization'",
+      "relevance_score": 0.0
+    },
+    {
+      "cite_key": "liu2022bond",
+      "title": "BOND: Benchmarking Unsupervised Outlier Node Detection on Static Attributed Graphs",
+      "status": "verified",
+      "confidence": 1.0,
+      "method": "openalex",
+      "details": "Confirmed via OpenAlex: 'BOND: Benchmarking Unsupervised Outlier Node Detection on Static Attributed Graphs'",
+      "relevance_score": 0.0
+    },
+    {
+      "cite_key": "banbury2021mlperf",
+      "title": "MLPerf Tiny Benchmark",
+      "status": "verified",
+      "confidence": 1.0,
+      "method": "openalex",
+      "details": "Confirmed via OpenAlex: 'MLPerf Tiny Benchmark'",
+      "relevance_score": 0.7
+    },
+    {
+      "cite_key": "desislavov2021compute",
+      "title": "Compute and Energy Consumption Trends in Deep Learning Inference",
+      "status": "suspicious",
+      "confidence": 0.538,
+      "method": "doi",
+      "details": "DOI resolves but title differs (sim=0.54): 'Trends in AI inference energy consumption: Beyond the performance-vs-parameter laws of deep learning'",
+      "relevance_score": 0.6
+    }
+  ]
+}

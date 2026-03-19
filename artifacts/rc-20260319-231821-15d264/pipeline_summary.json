@@ -1,0 +1,19 @@
+{
+  "run_id": "rc-20260319-231821-15d264",
+  "stages_executed": 29,
+  "stages_done": 29,
+  "stages_blocked": 0,
+  "stages_failed": 0,
+  "degraded": false,
+  "from_stage": 1,
+  "final_stage": 23,
+  "final_status": "done",
+  "generated": "2026-03-19T23:45:49+00:00",
+  "content_metrics": {
+    "template_ratio": 0.0,
+    "citation_verify_score": 0.8889,
+    "total_citations": 9,
+    "verified_citations": 8,
+    "degraded_sources": []
+  }
+}

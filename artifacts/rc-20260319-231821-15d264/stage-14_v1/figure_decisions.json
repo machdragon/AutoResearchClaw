@@ -1,0 +1,93 @@
+{
+  "decisions": [
+    {
+      "section": "Method",
+      "figure_type": "pipeline_overview",
+      "backend": "image",
+      "description": "High-level pipeline overview for Parameter Golf lane_3 showing: (1) float-only training producing Baseline I; (2) staged QAT with fake quantization starting at training_frac=0.5 leading to Baseline E (QAT+teacher); (3) codec-guided distillation variant F adding an explicit zlib-based compression loss L_comp on selected tensors; (4) optional compression-biased gating variant H with training-time stochastic gates driven by per-channel zlib statistics. The diagram should also depict the int8+zlib deployment roundtrip, the 16MB artifact cap, and the quick-gate runtime constraint (runtime <= 1.10x baseline).",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "architecture_diagram",
+      "backend": "image",
+      "description": "Conceptual architecture/method diagram zooming into the codec-guided distillation (Hypothesis 1). Show a float teacher network and an int8-student undergoing staged QAT. Indicate: (a) the standard distillation path with KL loss between teacher and quantized-student logits; (b) the selection of specific weight tensors or activations from the quantized student, conversion to bytes, zlib.compress call, and computation of bits-per-byte; (c) the teacher- or baseline-relative target alpha and the resulting L_comp = (L_zlib - alpha)^2 term; (d) combination into L_total = L_task + lambda_kd * L_KD + lambda_comp * L_comp. Make it clear that zlib is used sparsely during training and that deployment uses int8+zlib without extra components.",
+      "priority": 1
+    },
+    {
+      "section": "Results",
+      "figure_type": "bar_comparison",
+      "backend": "code",
+      "description": "Bar chart comparing post-roundtrip val_bpb and runtime ratio across key variants to test Hypothesis 3 and the quick-gate constraint. Include at least: Baseline I (float-only + post-hoc int8 quantization), Baseline E (staged QAT + float-teacher distillation without codec-aware terms), codec-guided F (Hypothesis 1), and compression-biased gating H (Hypothesis 2, if run). For each variant plot two grouped bars: val_bpb (lower is better) and runtime_ratio relative to baseline_runtime_ms (with a horizontal line at 1.10 marking the quick-gate threshold). Highlight that the provided experimental point (val_bpb=3.3919 vs baseline_val_bpb=3.3794, runtime_ratio≈1.28) sits above the runtime limit and slightly worse in bpb, illustrating a failure case.",
+      "priority": 1
+    },
+    {
+      "section": "Results",
+      "figure_type": "ablation_chart",
+      "backend": "code",
+      "description": "Ablation bar chart or grouped bars focused on Hypothesis 1 (codec-guided distillation). Show relative val_bpb (normalized to Baseline E = 1.0) for several ablations: (a) Baseline E (no L_comp), (b) F with small lambda_comp, (c) F with larger lambda_comp, (d) optional variant using different tensor selections for zlib (weights-only vs activations-only). The y-axis is relative val_bpb (lower than 1.0 indicates improvement). Optionally overlay markers or a secondary axis for task metric change to show compression–accuracy trade-offs. This figure should make clear whether codec-guided loss produces ≥1.5% improvements or fails the 0.5% threshold.",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "method_flowchart",
+      "backend": "image",
+      "description": "Flowchart detailing the compression-biased gate dropout mechanism (Hypothesis 2). Steps: (1) During selected minibatches, quantize per-channel activations, run zlib on each channel slice to obtain bpb_c, and update EMA statistics h_c; (2) compute biased drop probabilities p_drop(c) = clip(beta * (h_c - mean_h), 0, p_max); (3) sample binary gate g_c ~ Bernoulli(1 - p_drop(c)) and apply to activations during QAT; (4) emphasize that at inference, all g_c are fixed to 1 (no gating), so the deployed graph is unchanged. Include annotations about how this ties into the overall QAT stage and preserves the gate/runtime budget.",
+      "priority": 2
+    },
+    {
+      "section": "Results",
+      "figure_type": "ablation_chart",
+      "backend": "code",
+      "description": "Ablation/comparison figure for Hypothesis 2 illustrating the effect of compression-biased gating vs uniform dropout under the same gate budget. Use bars for: (a) QAT baseline with uniform dropout/stochastic depth (G), (b) compression-biased gates H with moderate beta, (c) H with more aggressive gating (higher p_max or beta). For each configuration plot val_bpb and task metric (e.g., accuracy or NLL) side-by-side, or val_bpb on primary axis with task delta on a secondary axis. The goal is to show whether ≥2% val_bpb gains are realized without >0.7% accuracy loss or whether the effect is small/negative, indicating fragile gains.",
+      "priority": 2
+    }
+  ],
+  "code_figures": [
+    {
+      "section": "Results",
+      "figure_type": "bar_comparison",
+      "backend": "code",
+      "description": "Bar chart comparing post-roundtrip val_bpb and runtime ratio across key variants to test Hypothesis 3 and the quick-gate constraint. Include at least: Baseline I (float-only + post-hoc int8 quantization), Baseline E (staged QAT + float-teacher distillation without codec-aware terms), codec-guided F (Hypothesis 1), and compression-biased gating H (Hypothesis 2, if run). For each variant plot two grouped bars: val_bpb (lower is better) and runtime_ratio relative to baseline_runtime_ms (with a horizontal line at 1.10 marking the quick-gate threshold). Highlight that the provided experimental point (val_bpb=3.3919 vs baseline_val_bpb=3.3794, runtime_ratio≈1.28) sits above the runtime limit and slightly worse in bpb, illustrating a failure case.",
+      "priority": 1
+    },
+    {
+      "section": "Results",
+      "figure_type": "ablation_chart",
+      "backend": "code",
+      "description": "Ablation bar chart or grouped bars focused on Hypothesis 1 (codec-guided distillation). Show relative val_bpb (normalized to Baseline E = 1.0) for several ablations: (a) Baseline E (no L_comp), (b) F with small lambda_comp, (c) F with larger lambda_comp, (d) optional variant using different tensor selections for zlib (weights-only vs activations-only). The y-axis is relative val_bpb (lower than 1.0 indicates improvement). Optionally overlay markers or a secondary axis for task metric change to show compression–accuracy trade-offs. This figure should make clear whether codec-guided loss produces ≥1.5% improvements or fails the 0.5% threshold.",
+      "priority": 1
+    },
+    {
+      "section": "Results",
+      "figure_type": "ablation_chart",
+      "backend": "code",
+      "description": "Ablation/comparison figure for Hypothesis 2 illustrating the effect of compression-biased gating vs uniform dropout under the same gate budget. Use bars for: (a) QAT baseline with uniform dropout/stochastic depth (G), (b) compression-biased gates H with moderate beta, (c) H with more aggressive gating (higher p_max or beta). For each configuration plot val_bpb and task metric (e.g., accuracy or NLL) side-by-side, or val_bpb on primary axis with task delta on a secondary axis. The goal is to show whether ≥2% val_bpb gains are realized without >0.7% accuracy loss or whether the effect is small/negative, indicating fragile gains.",
+      "priority": 2
+    }
+  ],
+  "image_figures": [
+    {
+      "section": "Method",
+      "figure_type": "pipeline_overview",
+      "backend": "image",
+      "description": "High-level pipeline overview for Parameter Golf lane_3 showing: (1) float-only training producing Baseline I; (2) staged QAT with fake quantization starting at training_frac=0.5 leading to Baseline E (QAT+teacher); (3) codec-guided distillation variant F adding an explicit zlib-based compression loss L_comp on selected tensors; (4) optional compression-biased gating variant H with training-time stochastic gates driven by per-channel zlib statistics. The diagram should also depict the int8+zlib deployment roundtrip, the 16MB artifact cap, and the quick-gate runtime constraint (runtime <= 1.10x baseline).",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "architecture_diagram",
+      "backend": "image",
+      "description": "Conceptual architecture/method diagram zooming into the codec-guided distillation (Hypothesis 1). Show a float teacher network and an int8-student undergoing staged QAT. Indicate: (a) the standard distillation path with KL loss between teacher and quantized-student logits; (b) the selection of specific weight tensors or activations from the quantized student, conversion to bytes, zlib.compress call, and computation of bits-per-byte; (c) the teacher- or baseline-relative target alpha and the resulting L_comp = (L_zlib - alpha)^2 term; (d) combination into L_total = L_task + lambda_kd * L_KD + lambda_comp * L_comp. Make it clear that zlib is used sparsely during training and that deployment uses int8+zlib without extra components.",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "method_flowchart",
+      "backend": "image",
+      "description": "Flowchart detailing the compression-biased gate dropout mechanism (Hypothesis 2). Steps: (1) During selected minibatches, quantize per-channel activations, run zlib on each channel slice to obtain bpb_c, and update EMA statistics h_c; (2) compute biased drop probabilities p_drop(c) = clip(beta * (h_c - mean_h), 0, p_max); (3) sample binary gate g_c ~ Bernoulli(1 - p_drop(c)) and apply to activations during QAT; (4) emphasize that at inference, all g_c are fixed to 1 (no gating), so the deployed graph is unchanged. Include annotations about how this ties into the overall QAT stage and preserves the gate/runtime budget.",
+      "priority": 2
+    }
+  ],
+  "total": 6
+}

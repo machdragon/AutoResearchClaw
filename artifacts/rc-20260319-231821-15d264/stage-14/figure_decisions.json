@@ -1,0 +1,107 @@
+{
+  "decisions": [
+    {
+      "section": "Method",
+      "figure_type": "pipeline_overview",
+      "backend": "image",
+      "description": "End-to-end training and evaluation pipeline for Parameter Golf lane_3. Show (1) float-only training leading to Baseline I (float model + post-hoc int8 quantization + zlib); (2) staged QAT path with fake quantization (qat_start_frac, qat_group_size) leading to QAT models E/F/H; (3) the common evaluation path applying int8 quantization + zlib roundtrip to produce val_bpb and runtime metrics. Indicate the 16MB artifact limit and the quick-gate runtime<=1.10x constraint on the evaluation branch.",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "architecture_diagram",
+      "backend": "image",
+      "description": "Conceptual diagram of the model and gate structure used in Parameter Golf. Depict a generic stack of layers (e.g., transformer blocks or conv blocks) with per-layer channels/heads and an optional gating mask. Highlight where quantization operators (fake quant, int8) are inserted during QAT, and which tensors are subject to zlib-based measurements (weights vs activations). Annotate the gate budget (fraction of channels/heads active) and clarify that inference uses deterministic gates while training can use stochastic gates.",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "method_flowchart",
+      "backend": "image",
+      "description": "Detailed schematic of the codec-guided distillation objective (Hypothesis 1). Show: float teacher path producing logits and reference tensors; student path with fake-quantized weights/activations; computation of L_task and KL distillation loss from teacher logits; selection of specific quantized tensors (e.g., final-layer weights or activations), conversion to bytes, zlib.compress call, computation of compressed bits-per-byte; comparison against a teacher- or baseline-derived target alpha to form L_comp=(L_zlib-alpha)^2; and final combination L_total=L_task+lambda_kd*L_KD+lambda_comp*L_comp. Include a small inset showing sparse evaluation of L_comp every N steps on CPU.",
+      "priority": 1
+    },
+    {
+      "section": "Results",
+      "figure_type": "bar_comparison",
+      "backend": "code",
+      "description": "Bar chart comparing post-roundtrip val_bpb and runtime ratio for the main model variants under identical gate budget and 16MB artifact cap. Include at least: Baseline I (float-only + post-hoc int8+zlib), QAT+teacher baseline E, codec-guided F, and optionally compression-biased gating H. For each model, plot two grouped bars: val_bpb (lower is better) and runtime_ratio vs baseline (with a reference line at 1.10 for the quick-gate threshold). This figure supports testing Hypotheses 1 and 3 and highlights cases where quick_gate_passed=0 due to runtime_ratio>1.10 (as in the provided example with runtime_ratio≈1.28 and slightly worse val_bpb than baseline).",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "concept_illustration",
+      "backend": "image",
+      "description": "Visualization of compression-biased stochastic gating (Hypothesis 2). For a single representative layer, depict multiple channels/heads with associated EMA statistics h_c (zlib bpb per channel). Show periodic measurement: activations are quantized, split per channel, passed through zlib, yielding bpb_c and updating h_c. Then illustrate how p_drop(c) is computed from h_c (higher bpb -> higher drop probability) and used to sample binary gates g_c during training. Emphasize that at inference all gates are fixed to 1 (no stochasticity) and the graph matches the baseline.",
+      "priority": 2
+    },
+    {
+      "section": "Results",
+      "figure_type": "bar_comparison",
+      "backend": "code",
+      "description": "Bar chart summarizing relative improvements in val_bpb across multiple experimental settings (e.g., different model sizes or datasets) to evaluate the contrarian Hypothesis 3. For each setting, show the float-only+post-hoc baseline and the best QAT/roundtrip-aware variant (from E/F/H) side by side, with labels indicating percent change in val_bpb and whether the runtime constraint (<=1.10x) is satisfied. Highlight that in many settings the improvement is <1% or negative, unless codec-guided methods clearly exceed the 3% threshold.",
+      "priority": 2
+    },
+    {
+      "section": "Results",
+      "figure_type": "scatter_plot",
+      "backend": "code",
+      "description": "Scatter plot of runtime_ratio vs relative val_bpb change for all evaluated configurations (including different seeds and hyperparameters such as compression_reg_lambda, qat_start_frac, qat_group_size). Each point is a trained model; color-code by method family (float-only+post-hoc, vanilla QAT, codec-guided QAT, compression-biased gating). Draw horizontal line at 0% relative val_bpb change and vertical line at runtime_ratio=1.10. This figure visually shows the trade-off frontier and whether codec-aware methods move it meaningfully or primarily violate the quick-gate runtime constraint, as seen in the provided metrics example.",
+      "priority": 2
+    }
+  ],
+  "code_figures": [
+    {
+      "section": "Results",
+      "figure_type": "bar_comparison",
+      "backend": "code",
+      "description": "Bar chart comparing post-roundtrip val_bpb and runtime ratio for the main model variants under identical gate budget and 16MB artifact cap. Include at least: Baseline I (float-only + post-hoc int8+zlib), QAT+teacher baseline E, codec-guided F, and optionally compression-biased gating H. For each model, plot two grouped bars: val_bpb (lower is better) and runtime_ratio vs baseline (with a reference line at 1.10 for the quick-gate threshold). This figure supports testing Hypotheses 1 and 3 and highlights cases where quick_gate_passed=0 due to runtime_ratio>1.10 (as in the provided example with runtime_ratio≈1.28 and slightly worse val_bpb than baseline).",
+      "priority": 1
+    },
+    {
+      "section": "Results",
+      "figure_type": "bar_comparison",
+      "backend": "code",
+      "description": "Bar chart summarizing relative improvements in val_bpb across multiple experimental settings (e.g., different model sizes or datasets) to evaluate the contrarian Hypothesis 3. For each setting, show the float-only+post-hoc baseline and the best QAT/roundtrip-aware variant (from E/F/H) side by side, with labels indicating percent change in val_bpb and whether the runtime constraint (<=1.10x) is satisfied. Highlight that in many settings the improvement is <1% or negative, unless codec-guided methods clearly exceed the 3% threshold.",
+      "priority": 2
+    },
+    {
+      "section": "Results",
+      "figure_type": "scatter_plot",
+      "backend": "code",
+      "description": "Scatter plot of runtime_ratio vs relative val_bpb change for all evaluated configurations (including different seeds and hyperparameters such as compression_reg_lambda, qat_start_frac, qat_group_size). Each point is a trained model; color-code by method family (float-only+post-hoc, vanilla QAT, codec-guided QAT, compression-biased gating). Draw horizontal line at 0% relative val_bpb change and vertical line at runtime_ratio=1.10. This figure visually shows the trade-off frontier and whether codec-aware methods move it meaningfully or primarily violate the quick-gate runtime constraint, as seen in the provided metrics example.",
+      "priority": 2
+    }
+  ],
+  "image_figures": [
+    {
+      "section": "Method",
+      "figure_type": "pipeline_overview",
+      "backend": "image",
+      "description": "End-to-end training and evaluation pipeline for Parameter Golf lane_3. Show (1) float-only training leading to Baseline I (float model + post-hoc int8 quantization + zlib); (2) staged QAT path with fake quantization (qat_start_frac, qat_group_size) leading to QAT models E/F/H; (3) the common evaluation path applying int8 quantization + zlib roundtrip to produce val_bpb and runtime metrics. Indicate the 16MB artifact limit and the quick-gate runtime<=1.10x constraint on the evaluation branch.",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "architecture_diagram",
+      "backend": "image",
+      "description": "Conceptual diagram of the model and gate structure used in Parameter Golf. Depict a generic stack of layers (e.g., transformer blocks or conv blocks) with per-layer channels/heads and an optional gating mask. Highlight where quantization operators (fake quant, int8) are inserted during QAT, and which tensors are subject to zlib-based measurements (weights vs activations). Annotate the gate budget (fraction of channels/heads active) and clarify that inference uses deterministic gates while training can use stochastic gates.",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "method_flowchart",
+      "backend": "image",
+      "description": "Detailed schematic of the codec-guided distillation objective (Hypothesis 1). Show: float teacher path producing logits and reference tensors; student path with fake-quantized weights/activations; computation of L_task and KL distillation loss from teacher logits; selection of specific quantized tensors (e.g., final-layer weights or activations), conversion to bytes, zlib.compress call, computation of compressed bits-per-byte; comparison against a teacher- or baseline-derived target alpha to form L_comp=(L_zlib-alpha)^2; and final combination L_total=L_task+lambda_kd*L_KD+lambda_comp*L_comp. Include a small inset showing sparse evaluation of L_comp every N steps on CPU.",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "concept_illustration",
+      "backend": "image",
+      "description": "Visualization of compression-biased stochastic gating (Hypothesis 2). For a single representative layer, depict multiple channels/heads with associated EMA statistics h_c (zlib bpb per channel). Show periodic measurement: activations are quantized, split per channel, passed through zlib, yielding bpb_c and updating h_c. Then illustrate how p_drop(c) is computed from h_c (higher bpb -> higher drop probability) and used to sample binary gates g_c during training. Emphasize that at inference all gates are fixed to 1 (no stochasticity) and the graph matches the baseline.",
+      "priority": 2
+    }
+  ],
+  "total": 7
+}

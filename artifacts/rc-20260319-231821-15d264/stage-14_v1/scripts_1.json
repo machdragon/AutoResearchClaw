@@ -1,0 +1,11 @@
+[
+  {
+    "figure_id": "fig_main_results_val_bpb",
+    "chart_type": "bar_comparison",
+    "output_filename": "fig_main_results_val_bpb.png",
+    "title": "Validation bpb Comparison: Float Training vs QAT + Roundtrip Alignment",
+    "caption": "Comparison of validation bits-per-byte (val_bpb) between the baseline float-only model and the QAT + roundtrip-aware compression alignment configuration, both under the same gate budget and artifact size limit. Lower val_bpb indicates better compression performance.",
+    "section": "results",
+    "width": "single_column"
+  }
+]

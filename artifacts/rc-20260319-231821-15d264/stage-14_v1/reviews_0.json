@@ -1,0 +1,105 @@
+[
+  {
+    "figure_id": "fig_main_results_val_bpb",
+    "passed": false,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "critical",
+        "message": "The figure title and caption describe a comparison between a float baseline and a QAT + roundtrip configuration, but the plotted data only contains a single condition (`['metrics']`). This does not visually communicate the intended comparison."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The x-axis label 'Training / Compression Strategy' suggests multiple strategies, but only one bar labeled 'metrics' is shown. This is potentially confusing for readers."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The confidence intervals are all identical to the mean values, resulting in zero-height error bars. This clutters the plot without adding information and may confuse readers into thinking there is uncertainty when there is none."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "critical",
+        "message": "The title explicitly references 'Float Training vs QAT + Roundtrip Alignment', but only one bar is shown. The figure does not reflect the contrast implied by the title."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "For a single scalar value, a bar chart may be overkill and somewhat misleading (suggesting more structure than exists). If only a single condition is intended, a table or textual reporting might be clearer, or at least a simpler visual (e.g., annotated point)."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "No legend is provided. If multiple strategies are eventually plotted (as implied by the title), a legend or clear x-tick naming is needed to distinguish them; currently, the setup anticipates multiple conditions but only one is shown."
+      }
+    ],
+    "issue_count": 6
+  },
+  {
+    "figure_id": "fig_runtime_quick_gate",
+    "passed": true,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Only fig.tight_layout() is used; relying solely on tight_layout can sometimes lead to cramped labels in multi-panel or more complex figures. For a single small panel this is usually acceptable, but constrained_layout=True on figure creation is often more robust."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "A bar chart with error bars is used for a single condition (n=1). For a one-point runtime comparison, a simple point plot or annotated horizontal line can be more informative and visually efficient than a solitary bar."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The caption mentions runtime ratio and quick-gate constraint satisfaction, but the script does not compute or annotate any ratio or constraint status on the figure. Consider adding text/markers (e.g., '1.02× baseline, passes 1.10× gate') or a reference line at 1.10× if that is central to the message."
+      }
+    ],
+    "issue_count": 3
+  },
+  {
+    "figure_id": "fig_delta_bpb_vs_baseline",
+    "passed": true,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Figure DPI is set to 300 via rcParams ('figure.dpi' and 'savefig.dpi'), which is acceptable for most venues. For camera-ready print quality, 400–600 DPI can be preferable, but 300 meets the minimum requirement."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Title size is 12pt and axis labels are 10pt, matching the stated minimums. Tick labels and legend font (9pt) are slightly below the recommended 10pt for optimal print readability, but still likely acceptable for a small figure (3.5×3.0 inches)."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The chart shows a single condition with identical value and confidence interval bounds (no actual interval). A bar with error bars may visually suggest uncertainty where none exists. A simple annotated point or bar without error bars (or an explicit note that CI collapses) might be clearer."
+      }
+    ],
+    "issue_count": 3
+  },
+  {
+    "figure_id": "fig_gate_feasibility_overview",
+    "passed": true,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Tick and legend font sizes are set to 9 pt, which is slightly below the commonly recommended minimum of 10 pt for printed readability. Axes labels are 10 pt and title is 12 pt, which are appropriate."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The y-axis label 'Pass (1) / Fail (0)' suggests a binary feasibility outcome, but the plotted value is a single continuous value (3.3919) with zero-width error bars. This may confuse readers about the meaning of the metric and whether a bar chart on this scale is appropriate. Clarify the metric or adjust the scale/labeling to match the data semantics."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Only one condition ('metrics') is shown as a single bar. For a simple feasibility indicator, a bar chart may be overkill; a table-like annotation or categorical marker could be clearer. If this is part of a panel, this is less of a concern, but on its own the figure may look sparse."
+      }
+    ],
+    "issue_count": 3
+  }
+]

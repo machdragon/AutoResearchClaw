@@ -1,0 +1,97 @@
+{
+  "manifest": [
+    {
+      "figure_number": 1,
+      "figure_id": "pipeline_overview_1",
+      "file_path": "charts/pipeline_overview_1.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/pipeline_overview_1.png",
+      "title": "End-to-end training and evaluation pipeline for Parameter Golf lane_3. Show (1) ",
+      "caption": "End-to-end training and evaluation pipeline for Parameter Golf lane_3. Show (1) float-only training leading to Baseline I (float model + post-hoc int8 quantization + zlib); (2) staged QAT path with fake quantization (qat_start_frac, qat_group_size) leading to QAT models E/F/H; (3) the common evaluation path applying int8 quantization + zlib roundtrip to produce val_bpb and runtime metrics. Indicate the 16MB artifact limit and the quick-gate runtime<=1.10x constraint on the evaluation branch.",
+      "paper_section": "Method",
+      "width": "single_column",
+      "label": "fig:pipeline_overview_1",
+      "script_path": ""
+    },
+    {
+      "figure_number": 2,
+      "figure_id": "architecture_diagram_2",
+      "file_path": "charts/architecture_diagram_2.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/architecture_diagram_2.png",
+      "title": "Conceptual diagram of the model and gate structure used in Parameter Golf. Depic",
+      "caption": "Conceptual diagram of the model and gate structure used in Parameter Golf. Depict a generic stack of layers (e.g., transformer blocks or conv blocks) with per-layer channels/heads and an optional gating mask. Highlight where quantization operators (fake quant, int8) are inserted during QAT, and which tensors are subject to zlib-based measurements (weights vs activations). Annotate the gate budget (fraction of channels/heads active) and clarify that inference uses deterministic gates while training can use stochastic gates.",
+      "paper_section": "Method",
+      "width": "single_column",
+      "label": "fig:architecture_diagram_2",
+      "script_path": ""
+    },
+    {
+      "figure_number": 3,
+      "figure_id": "method_flowchart_3",
+      "file_path": "charts/method_flowchart_3.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/method_flowchart_3.png",
+      "title": "Detailed schematic of the codec-guided distillation objective (Hypothesis 1). Sh",
+      "caption": "Detailed schematic of the codec-guided distillation objective (Hypothesis 1). Show: float teacher path producing logits and reference tensors; student path with fake-quantized weights/activations; computation of L_task and KL distillation loss from teacher logits; selection of specific quantized tensors (e.g., final-layer weights or activations), conversion to bytes, zlib.compress call, computation of compressed bits-per-byte; comparison against a teacher- or baseline-derived target alpha to form L_comp=(L_zlib-alpha)^2; and final combination L_total=L_task+lambda_kd*L_KD+lambda_comp*L_comp. Include a small inset showing sparse evaluation of L_comp every N steps on CPU.",
+      "paper_section": "Method",
+      "width": "single_column",
+      "label": "fig:method_flowchart_3",
+      "script_path": ""
+    },
+    {
+      "figure_number": 4,
+      "figure_id": "concept_illustration_4",
+      "file_path": "charts/concept_illustration_4.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/concept_illustration_4.png",
+      "title": "Visualization of compression-biased stochastic gating (Hypothesis 2). For a sing",
+      "caption": "Visualization of compression-biased stochastic gating (Hypothesis 2). For a single representative layer, depict multiple channels/heads with associated EMA statistics h_c (zlib bpb per channel). Show periodic measurement: activations are quantized, split per channel, passed through zlib, yielding bpb_c and updating h_c. Then illustrate how p_drop(c) is computed from h_c (higher bpb -> higher drop probability) and used to sample binary gates g_c during training. Emphasize that at inference all gates are fixed to 1 (no stochasticity) and the graph matches the baseline.",
+      "paper_section": "Method",
+      "width": "single_column",
+      "label": "fig:concept_illustration_4",
+      "script_path": ""
+    },
+    {
+      "figure_number": 5,
+      "figure_id": "fig_main_results_comparison",
+      "file_path": "charts/fig_main_results_comparison.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/fig_main_results_comparison.png",
+      "title": "Validation bpb for Float-only vs. QAT+Roundtrip-aligned Models",
+      "caption": "Comparison of validation bits-per-byte (val_bpb) between the baseline float-only training and the proposed staged QAT aligned to int8+zlib roundtrip under the same gate budget and artifact size limit. Lower val_bpb indicates better compression, illustrating whether the QAT+roundtrip-aware alignment improves post-roundtrip performance relative to the float baseline.",
+      "paper_section": "Results",
+      "width": "single_column",
+      "label": "fig:fig_main_results_comparison",
+      "script_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/scripts/fig_main_results_comparison.py"
+    },
+    {
+      "figure_number": 6,
+      "figure_id": "fig_runtime_overhead_quick_gate",
+      "file_path": "charts/fig_runtime_overhead_quick_gate.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/fig_runtime_overhead_quick_gate.png",
+      "title": "Runtime Overhead and Quick-gate Constraint",
+      "caption": "Runtime comparison between the baseline float-only model and the QAT+roundtrip-aligned model, showing absolute runtime (ms) and the runtime ratio relative to baseline. A dashed horizontal reference at 1.10× marks the quick-gate threshold, indicating whether the proposed method satisfies the runtime constraint while improving val_bpb.",
+      "paper_section": "Results",
+      "width": "single_column",
+      "label": "fig:fig_runtime_overhead_quick_gate",
+      "script_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/scripts/fig_runtime_overhead_quick_gate.py"
+    },
+    {
+      "figure_number": 7,
+      "figure_id": "fig_bitrate_vs_runtime_tradeoff",
+      "file_path": "charts/fig_bitrate_vs_runtime_tradeoff.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/fig_bitrate_vs_runtime_tradeoff.png",
+      "title": "Bitrate–Runtime Trade-off for Baseline vs. QAT+Roundtrip",
+      "caption": "Joint view of compression efficiency and computational cost, plotting val_bpb against runtime for the baseline float-only and QAT+roundtrip-aligned models. Points lying toward the lower-left corner correspond to configurations that are both more efficient (lower val_bpb) and faster (lower runtime), highlighting the trade-off frontier under the artifact size and quick-gate constraints.",
+      "paper_section": "Analysis",
+      "width": "single_column",
+      "label": "fig:fig_bitrate_vs_runtime_tradeoff",
+      "script_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/scripts/fig_bitrate_vs_runtime_tradeoff.py"
+    }
+  ],
+  "markdown_refs": "![Figure 1: End-to-end training and evaluation pipeline for Parameter Golf lane_3. Show (1) float-only training leading to Baseline I (float model + post-hoc int8 quantization + zlib); (2) staged QAT path with fake quantization (qat_start_frac, qat_group_size) leading to QAT models E/F/H; (3) the common evaluation path applying int8 quantization + zlib roundtrip to produce val_bpb and runtime metrics. Indicate the 16MB artifact limit and the quick-gate runtime<=1.10x constraint on the evaluation branch.](charts/pipeline_overview_1.png)\n\n![Figure 2: Conceptual diagram of the model and gate structure used in Parameter Golf. Depict a generic stack of layers (e.g., transformer blocks or conv blocks) with per-layer channels/heads and an optional gating mask. Highlight where quantization operators (fake quant, int8) are inserted during QAT, and which tensors are subject to zlib-based measurements (weights vs activations). Annotate the gate budget (fraction of channels/heads active) and clarify that inference uses deterministic gates while training can use stochastic gates.](charts/architecture_diagram_2.png)\n\n![Figure 3: Detailed schematic of the codec-guided distillation objective (Hypothesis 1). Show: float teacher path producing logits and reference tensors; student path with fake-quantized weights/activations; computation of L_task and KL distillation loss from teacher logits; selection of specific quantized tensors (e.g., final-layer weights or activations), conversion to bytes, zlib.compress call, computation of compressed bits-per-byte; comparison against a teacher- or baseline-derived target alpha to form L_comp=(L_zlib-alpha)^2; and final combination L_total=L_task+lambda_kd*L_KD+lambda_comp*L_comp. Include a small inset showing sparse evaluation of L_comp every N steps on CPU.](charts/method_flowchart_3.png)\n\n![Figure 4: Visualization of compression-biased stochastic gating (Hypothesis 2). For a single representative layer, depict multiple channels/heads with associated EMA statistics h_c (zlib bpb per channel). Show periodic measurement: activations are quantized, split per channel, passed through zlib, yielding bpb_c and updating h_c. Then illustrate how p_drop(c) is computed from h_c (higher bpb -> higher drop probability) and used to sample binary gates g_c during training. Emphasize that at inference all gates are fixed to 1 (no stochasticity) and the graph matches the baseline.](charts/concept_illustration_4.png)\n\n![Figure 5: Comparison of validation bits-per-byte (val_bpb) between the baseline float-only training and the proposed staged QAT aligned to int8+zlib roundtrip under the same gate budget and artifact size limit. Lower val_bpb indicates better compression, illustrating whether the QAT+roundtrip-aware alignment improves post-roundtrip performance relative to the float baseline.](charts/fig_main_results_comparison.png)\n\n![Figure 6: Runtime comparison between the baseline float-only model and the QAT+roundtrip-aligned model, showing absolute runtime (ms) and the runtime ratio relative to baseline. A dashed horizontal reference at 1.10× marks the quick-gate threshold, indicating whether the proposed method satisfies the runtime constraint while improving val_bpb.](charts/fig_runtime_overhead_quick_gate.png)\n\n![Figure 7: Joint view of compression efficiency and computational cost, plotting val_bpb against runtime for the baseline float-only and QAT+roundtrip-aligned models. Points lying toward the lower-left corner correspond to configurations that are both more efficient (lower val_bpb) and faster (lower runtime), highlighting the trade-off frontier under the artifact size and quick-gate constraints.](charts/fig_bitrate_vs_runtime_tradeoff.png)",
+  "figure_descriptions": "## AVAILABLE FIGURES (embed in the paper)\nThe following figures were generated from actual experiment data. Reference them in the appropriate paper sections using markdown image syntax: `![Caption](charts/filename.png)`\n\n**Figure 1** (`charts/pipeline_overview_1.png`) — End-to-end training and evaluation pipeline for Parameter Golf lane_3. Show (1) \n  Caption: End-to-end training and evaluation pipeline for Parameter Golf lane_3. Show (1) float-only training leading to Baseline I (float model + post-hoc int8 quantization + zlib); (2) staged QAT path with fake quantization (qat_start_frac, qat_group_size) leading to QAT models E/F/H; (3) the common evaluation path applying int8 quantization + zlib roundtrip to produce val_bpb and runtime metrics. Indicate the 16MB artifact limit and the quick-gate runtime<=1.10x constraint on the evaluation branch.\n  Place in: **Method** section\n\n**Figure 2** (`charts/architecture_diagram_2.png`) — Conceptual diagram of the model and gate structure used in Parameter Golf. Depic\n  Caption: Conceptual diagram of the model and gate structure used in Parameter Golf. Depict a generic stack of layers (e.g., transformer blocks or conv blocks) with per-layer channels/heads and an optional gating mask. Highlight where quantization operators (fake quant, int8) are inserted during QAT, and which tensors are subject to zlib-based measurements (weights vs activations). Annotate the gate budget (fraction of channels/heads active) and clarify that inference uses deterministic gates while training can use stochastic gates.\n  Place in: **Method** section\n\n**Figure 3** (`charts/method_flowchart_3.png`) — Detailed schematic of the codec-guided distillation objective (Hypothesis 1). Sh\n  Caption: Detailed schematic of the codec-guided distillation objective (Hypothesis 1). Show: float teacher path producing logits and reference tensors; student path with fake-quantized weights/activations; computation of L_task and KL distillation loss from teacher logits; selection of specific quantized tensors (e.g., final-layer weights or activations), conversion to bytes, zlib.compress call, computation of compressed bits-per-byte; comparison against a teacher- or baseline-derived target alpha to form L_comp=(L_zlib-alpha)^2; and final combination L_total=L_task+lambda_kd*L_KD+lambda_comp*L_comp. Include a small inset showing sparse evaluation of L_comp every N steps on CPU.\n  Place in: **Method** section\n\n**Figure 4** (`charts/concept_illustration_4.png`) — Visualization of compression-biased stochastic gating (Hypothesis 2). For a sing\n  Caption: Visualization of compression-biased stochastic gating (Hypothesis 2). For a single representative layer, depict multiple channels/heads with associated EMA statistics h_c (zlib bpb per channel). Show periodic measurement: activations are quantized, split per channel, passed through zlib, yielding bpb_c and updating h_c. Then illustrate how p_drop(c) is computed from h_c (higher bpb -> higher drop probability) and used to sample binary gates g_c during training. Emphasize that at inference all gates are fixed to 1 (no stochasticity) and the graph matches the baseline.\n  Place in: **Method** section\n\n**Figure 5** (`charts/fig_main_results_comparison.png`) — Validation bpb for Float-only vs. QAT+Roundtrip-aligned Models\n  Caption: Comparison of validation bits-per-byte (val_bpb) between the baseline float-only training and the proposed staged QAT aligned to int8+zlib roundtrip under the same gate budget and artifact size limit. Lower val_bpb indicates better compression, illustrating whether the QAT+roundtrip-aware alignment improves post-roundtrip performance relative to the float baseline.\n  Place in: **Results** section\n\n**Figure 6** (`charts/fig_runtime_overhead_quick_gate.png`) — Runtime Overhead and Quick-gate Constraint\n  Caption: Runtime comparison between the baseline float-only model and the QAT+roundtrip-aligned model, showing absolute runtime (ms) and the runtime ratio relative to baseline. A dashed horizontal reference at 1.10× marks the quick-gate threshold, indicating whether the proposed method satisfies the runtime constraint while improving val_bpb.\n  Place in: **Results** section\n\n**Figure 7** (`charts/fig_bitrate_vs_runtime_tradeoff.png`) — Bitrate–Runtime Trade-off for Baseline vs. QAT+Roundtrip\n  Caption: Joint view of compression efficiency and computational cost, plotting val_bpb against runtime for the baseline float-only and QAT+roundtrip-aligned models. Points lying toward the lower-left corner correspond to configurations that are both more efficient (lower val_bpb) and faster (lower runtime), highlighting the trade-off frontier under the artifact size and quick-gate constraints.\n  Place in: **Analysis** section\n\n\nFor each figure referenced, write a descriptive caption and discuss what the figure shows in 2-3 sentences.\n",
+  "output_dir": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts",
+  "manifest_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/figure_manifest.json",
+  "figure_count": 7,
+  "passed_count": 7,
+  "total_llm_calls": 29,
+  "total_tokens": 57828,
+  "elapsed_sec": 141.59359461699933
+}

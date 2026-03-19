@@ -1,0 +1,94 @@
+[
+  {
+    "figure_id": "fig_main_results_val_bpb",
+    "chart_type": "bar_comparison",
+    "title": "Validation bpb Comparison: Float Training vs QAT + Roundtrip Alignment",
+    "caption": "Comparison of validation bits-per-byte (val_bpb) between the baseline float-only model and the QAT + roundtrip-aware compression alignment configuration, both under the same gate budget and artifact size limit. Lower val_bpb indicates better compression performance.",
+    "data_source": {
+      "x_categories": [
+        "Baseline (float-only)",
+        "QAT + roundtrip-aligned"
+      ],
+      "y_metric": "val_bpb",
+      "available_values": {
+        "Baseline (float-only)": "baseline_val_bpb",
+        "QAT + roundtrip-aligned": "val_bpb"
+      },
+      "note": "Reported candidate val_bpb is 3.3919; baseline_val_bpb is taken from the baseline metrics entry."
+    },
+    "x_label": "Training / Compression Strategy",
+    "y_label": "Validation bits-per-byte (val_bpb)",
+    "width": "single_column",
+    "priority": 1,
+    "section": "results"
+  },
+  {
+    "figure_id": "fig_runtime_quick_gate",
+    "chart_type": "bar_comparison",
+    "title": "Runtime Overhead and Quick-Gate Constraint",
+    "caption": "Runtime comparison between the baseline float-only model and the QAT + roundtrip-aligned candidate, plotted in milliseconds with annotations for the runtime ratio and whether the quick-gate constraint (runtime ≤ 1.10× baseline) is satisfied.",
+    "data_source": {
+      "x_categories": [
+        "Baseline (float-only)",
+        "QAT + roundtrip-aligned"
+      ],
+      "y_metric": "runtime_ms",
+      "available_values": {
+        "Baseline (float-only)": "baseline_runtime_ms",
+        "QAT + roundtrip-aligned": "candidate_runtime_ms"
+      },
+      "aux_metrics": [
+        "runtime_ratio",
+        "quick_gate_passed"
+      ]
+    },
+    "x_label": "Training / Compression Strategy",
+    "y_label": "Runtime (ms per evaluation)",
+    "width": "single_column",
+    "priority": 1,
+    "section": "results"
+  },
+  {
+    "figure_id": "fig_delta_bpb_vs_baseline",
+    "chart_type": "bar_comparison",
+    "title": "Change in Validation bpb Relative to Baseline",
+    "caption": "Absolute change in validation bits-per-byte (delta_bpb) of the QAT + roundtrip-aligned configuration relative to the float-only baseline, highlighting the net compression benefit after the int8+zlib roundtrip.",
+    "data_source": {
+      "x_categories": [
+        "QAT + roundtrip-aligned vs. baseline"
+      ],
+      "y_metric": "delta_bpb",
+      "available_values": {
+        "QAT + roundtrip-aligned vs. baseline": "delta_bpb"
+      }
+    },
+    "x_label": "Comparison",
+    "y_label": "Δ val_bpb (candidate − baseline)",
+    "width": "single_column",
+    "priority": 2,
+    "section": "analysis"
+  },
+  {
+    "figure_id": "fig_gate_feasibility_overview",
+    "chart_type": "bar_comparison",
+    "title": "Feasibility Under Runtime and Artifact Constraints",
+    "caption": "Summary of whether the QAT + roundtrip-aligned configuration satisfies the quick-gate runtime constraint and the 16 MB artifact size limit, providing an at-a-glance feasibility check for deployment relative to the baseline.",
+    "data_source": {
+      "x_categories": [
+        "Quick-gate runtime",
+        "Artifact size limit"
+      ],
+      "y_metric": "binary_pass_fail",
+      "available_values": {
+        "Quick-gate runtime": "quick_gate_passed",
+        "Artifact size limit": "derived_from_method_design"
+      },
+      "note": "Artifact size feasibility is inferred from the compression design targeting ≤16 MB; runtime feasibility comes from quick_gate_passed."
+    },
+    "x_label": "Constraint Type",
+    "y_label": "Pass (1) / Fail (0)",
+    "width": "single_column",
+    "priority": 3,
+    "section": "analysis"
+  }
+]

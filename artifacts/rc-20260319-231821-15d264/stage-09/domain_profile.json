@@ -1,0 +1,11 @@
+{
+  "domain_id": "ml_compression",
+  "display_name": "Model Compression (ML)",
+  "experiment_paradigm": "comparison",
+  "core_libraries": [
+    "torch",
+    "numpy",
+    "scikit-learn"
+  ],
+  "gpu_required": true
+}

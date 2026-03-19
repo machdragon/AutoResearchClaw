@@ -1,0 +1,29 @@
+[
+  {
+    "figure_id": "fig_main_results_val_bpb",
+    "chart_type": "bar_comparison",
+    "output_filename": "fig_main_results_val_bpb.png",
+    "title": "Effect of QAT + Roundtrip-Aware Compression on Validation bpb",
+    "caption": "Comparison of validation bits-per-byte (val_bpb) between the float-only baseline and the proposed staged QAT with int8+zlib roundtrip alignment under the same gate budget. Lower val_bpb indicates better compression performance, directly testing the hypothesis that roundtrip-aware QAT improves post-roundtrip validation compression quality versus float-only training.",
+    "section": "results",
+    "width": "single_column"
+  },
+  {
+    "figure_id": "fig_runtime_quick_gate",
+    "chart_type": "bar_comparison",
+    "output_filename": "fig_runtime_quick_gate.png",
+    "title": "Runtime Overhead and Quick-Gate Constraint",
+    "caption": "Runtime comparison between the float-only baseline and the proposed QAT + roundtrip-aware compression lane, showing absolute runtime (ms) and the runtime ratio relative to baseline. A dashed reference line at 1.10× indicates the quick-gate threshold; bars above this line would violate the runtime constraint, while the quick_gate_passed indicator confirms whether the candidate configuration satisfies the artifact limit of ≤1.10× baseline runtime.",
+    "section": "results",
+    "width": "single_column"
+  },
+  {
+    "figure_id": "fig_delta_bpb_improvement",
+    "chart_type": "bar_comparison",
+    "output_filename": "fig_delta_bpb_improvement.png",
+    "title": "Change in Validation bpb Relative to Baseline",
+    "caption": "Delta in validation bits-per-byte (delta_bpb) for the QAT + roundtrip-aware method relative to the float-only baseline, where negative values correspond to an improvement in compression. This figure isolates the net effect size of the proposed lane on val_bpb, complementing the absolute metrics in the main results figure.",
+    "section": "analysis",
+    "width": "single_column"
+  }
+]

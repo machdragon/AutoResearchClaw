@@ -1,0 +1,38 @@
+[
+  {
+    "figure_id": "fig_main_results_val_bpb",
+    "chart_type": "bar_comparison",
+    "output_filename": "fig_main_results_val_bpb.png",
+    "title": "Validation bpb Comparison: Float Training vs QAT + Roundtrip Alignment",
+    "caption": "Comparison of validation bits-per-byte (val_bpb) between the baseline float-only model and the QAT + roundtrip-aware compression alignment configuration, both under the same gate budget and artifact size limit. Lower val_bpb indicates better compression performance.",
+    "section": "results",
+    "width": "single_column"
+  },
+  {
+    "figure_id": "fig_runtime_quick_gate",
+    "chart_type": "bar_comparison",
+    "output_filename": "fig_runtime_quick_gate.png",
+    "title": "Runtime Overhead and Quick-Gate Constraint",
+    "caption": "Runtime comparison between the baseline float-only model and the QAT + roundtrip-aligned candidate, plotted in milliseconds with annotations for the runtime ratio and whether the quick-gate constraint (runtime ≤ 1.10× baseline) is satisfied.",
+    "section": "results",
+    "width": "single_column"
+  },
+  {
+    "figure_id": "fig_delta_bpb_vs_baseline",
+    "chart_type": "bar_comparison",
+    "output_filename": "fig_delta_bpb_vs_baseline.png",
+    "title": "Change in Validation bpb Relative to Baseline",
+    "caption": "Absolute change in validation bits-per-byte (delta_bpb) of the QAT + roundtrip-aligned configuration relative to the float-only baseline, highlighting the net compression benefit after the int8+zlib roundtrip.",
+    "section": "analysis",
+    "width": "single_column"
+  },
+  {
+    "figure_id": "fig_gate_feasibility_overview",
+    "chart_type": "bar_comparison",
+    "output_filename": "fig_gate_feasibility_overview.png",
+    "title": "Feasibility Under Runtime and Artifact Constraints",
+    "caption": "Summary of whether the QAT + roundtrip-aligned configuration satisfies the quick-gate runtime constraint and the 16 MB artifact size limit, providing an at-a-glance feasibility check for deployment relative to the baseline.",
+    "section": "analysis",
+    "width": "single_column"
+  }
+]

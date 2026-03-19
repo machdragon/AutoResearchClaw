@@ -1,0 +1,20 @@
+[
+  {
+    "figure_id": "fig_main_results_comparison",
+    "chart_type": "bar_comparison",
+    "output_filename": "fig_main_results_comparison.png",
+    "title": "Validation bpb for Float-only vs. QAT+Roundtrip-aligned Models",
+    "caption": "Comparison of validation bits-per-byte (val_bpb) between the baseline float-only training and the proposed staged QAT aligned to int8+zlib roundtrip under the same gate budget and artifact size limit. Lower val_bpb indicates better compression, illustrating whether the QAT+roundtrip-aware alignment improves post-roundtrip performance relative to the float baseline.",
+    "section": "results",
+    "width": "single_column"
+  },
+  {
+    "figure_id": "fig_runtime_overhead_quick_gate",
+    "chart_type": "bar_comparison",
+    "output_filename": "fig_runtime_overhead_quick_gate.png",
+    "title": "Runtime Overhead and Quick-gate Constraint",
+    "caption": "Runtime comparison between the baseline float-only model and the QAT+roundtrip-aligned model, showing absolute runtime (ms) and the runtime ratio relative to baseline. A dashed horizontal reference at 1.10× marks the quick-gate threshold, indicating whether the proposed method satisfies the runtime constraint while improving val_bpb.",
+    "section": "results",
+    "width": "single_column"
+  }
+]

@@ -1,0 +1,113 @@
+[
+  {
+    "figure_id": "fig_main_results_comparison",
+    "passed": false,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Figure DPI is correctly set to 300 for both on-screen (`figure.dpi`) and saved output (`savefig.dpi`), which is suitable for publication."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Font sizes meet typical publication requirements: axes title = 12pt, labels = 10pt, ticks and legend = 9pt (slightly small but acceptable for a 3.5×3.0 inch figure). Consider 10pt for tick labels in some venues."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Colors are from a custom, generally colorblind-safe palette and not the default matplotlib colors. This is good practice. With only two bars and clear legend labels, color differentiation is adequate."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "critical",
+        "message": "`tight_layout` or `constrained_layout` is not enabled. While `savefig.bbox='tight'` helps, using `fig.tight_layout()` or `constrained_layout=True` is recommended to ensure labels and the delta bracket/annotation are not clipped in the final PDF/PNG."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The script attempts to use 'science'/'ieee' style and falls back to 'seaborn-whitegrid', else default. All are generally professional; however, behavior is environment-dependent. If the default style is used, consider explicitly enabling a light, unobtrusive grid and consistent line widths to match typical NeurIPS/ICML/ICLR aesthetics."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Legend is placed at `loc='upper right'` and is unlikely to overlap data in such a simple bar chart, but with a small figure size and the delta bracket near the top, there is a mild risk of crowding. If space is tight, consider placing the legend below or outside the plot area."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "A bar chart for two scalar metrics is acceptable but can visually exaggerate a very small absolute difference (~0.012 bpb). For expert audiences, a dot plot with error bars (if available) or a paired point comparison could communicate the small effect more honestly. Also, `err` is defined but never used; if no uncertainty is available, omitting error bars entirely is clearer than placeholder code."
+      }
+    ],
+    "issue_count": 7
+  },
+  {
+    "figure_id": "fig_runtime_overhead_quick_gate",
+    "passed": false,
+    "issues": [
+      {
+        "type": "numerical_accuracy",
+        "severity": "critical",
+        "message": "Script may not contain correct data values. Expected values like [3.3919] not found in script. Found values: []"
+      },
+      {
+        "type": "visual_quality",
+        "severity": "critical",
+        "message": "The script ends with a stray `a` and no figure saving (`plt.savefig`) or `tight_layout`/`constrained_layout` call. As written, it will raise a NameError and never produce a figure."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "DPI is correctly set to 300 for both `figure.dpi` and `savefig.dpi`, which is acceptable for publication. If the venue prefers higher DPI (e.g., 600), consider increasing."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Font sizes meet minimum recommendations (title=12pt, labels=10pt, ticks=10pt, legend=10pt). If the figure is expected to be printed very small, you may consider slightly larger title (e.g., 13–14pt)."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Colors are chosen from a colorblind-safe palette and do not use the default matplotlib cycle, which is good. However, the bar fill colors (blue and red) plus the green line and yellow threshold line might be hard to distinguish in grayscale print; adding different line styles or marker shapes in the legend text could improve robustness."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "`savefig.bbox='tight'` helps, but `plt.tight_layout()` or `constrained_layout=True` is not used. With a 3.5×3.0 inch figure and rotated x-labels, axis labels or tick labels may be cramped, especially in the right y-axis label area."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Legends are defined via labels on bars and lines, but no explicit legend call (`ax.legend` or `fig.legend`) or placement is specified. With two y-axes, a combined legend (e.g., `fig.legend(loc='upper center', ncol=3)` or separate legends placed in non-overlapping corners) should be added to avoid overlap with data and to clearly distinguish bar vs. line vs. threshold."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The y-grid on the primary axis is light and professional. However, the secondary axis has no grid, and only the right spine is visible. This is acceptable, but you might consider minor ticks or a light grid on the ratio axis for easier reading of the 1.10× threshold line."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The mixed bar (absolute runtime) + line (ratio) with a secondary y-axis is reasonable for this comparison and matches the caption. With only two strategies, an alternative is to show just bar heights plus annotations of the ratio on top of bars to avoid a dual y-axis, but this is not strictly necessary."
+      }
+    ],
+    "issue_count": 9
+  },
+  {
+    "figure_id": "fig_bitrate_vs_runtime_tradeoff",
+    "passed": true,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Figure and savefig DPI are set to 300, which is acceptable for publication; consider 400–600 DPI for very small figures or journals with stricter requirements."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The script is truncated at the legend creation comment (`# Legend positioned to avoid annota`), so the actual legend placement is unknown. Ensure `ax.legend()` is called with a location that does not overlap points or the text box (e.g., `loc='upper left'` or `bbox_to_anchor`)."
+      }
+    ],
+    "issue_count": 2
+  }
+]

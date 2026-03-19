@@ -1,0 +1,97 @@
+{
+  "manifest": [
+    {
+      "figure_number": 1,
+      "figure_id": "pipeline_overview_1",
+      "file_path": "charts/pipeline_overview_1.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/pipeline_overview_1.png",
+      "title": "High-level pipeline overview for Parameter Golf lane_3 showing: (1) float-only t",
+      "caption": "High-level pipeline overview for Parameter Golf lane_3 showing: (1) float-only training producing Baseline I; (2) staged QAT with fake quantization starting at training_frac=0.5 leading to Baseline E (QAT+teacher); (3) codec-guided distillation variant F adding an explicit zlib-based compression loss L_comp on selected tensors; (4) optional compression-biased gating variant H with training-time stochastic gates driven by per-channel zlib statistics. The diagram should also depict the int8+zlib deployment roundtrip, the 16MB artifact cap, and the quick-gate runtime constraint (runtime <= 1.10x baseline).",
+      "paper_section": "Method",
+      "width": "single_column",
+      "label": "fig:pipeline_overview_1",
+      "script_path": ""
+    },
+    {
+      "figure_number": 2,
+      "figure_id": "architecture_diagram_2",
+      "file_path": "charts/architecture_diagram_2.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/architecture_diagram_2.png",
+      "title": "Conceptual architecture/method diagram zooming into the codec-guided distillatio",
+      "caption": "Conceptual architecture/method diagram zooming into the codec-guided distillation (Hypothesis 1). Show a float teacher network and an int8-student undergoing staged QAT. Indicate: (a) the standard distillation path with KL loss between teacher and quantized-student logits; (b) the selection of specific weight tensors or activations from the quantized student, conversion to bytes, zlib.compress call, and computation of bits-per-byte; (c) the teacher- or baseline-relative target alpha and the resulting L_comp = (L_zlib - alpha)^2 term; (d) combination into L_total = L_task + lambda_kd * L_KD + lambda_comp * L_comp. Make it clear that zlib is used sparsely during training and that deployment uses int8+zlib without extra components.",
+      "paper_section": "Method",
+      "width": "single_column",
+      "label": "fig:architecture_diagram_2",
+      "script_path": ""
+    },
+    {
+      "figure_number": 3,
+      "figure_id": "method_flowchart_3",
+      "file_path": "charts/method_flowchart_3.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/method_flowchart_3.png",
+      "title": "Flowchart detailing the compression-biased gate dropout mechanism (Hypothesis 2)",
+      "caption": "Flowchart detailing the compression-biased gate dropout mechanism (Hypothesis 2). Steps: (1) During selected minibatches, quantize per-channel activations, run zlib on each channel slice to obtain bpb_c, and update EMA statistics h_c; (2) compute biased drop probabilities p_drop(c) = clip(beta * (h_c - mean_h), 0, p_max); (3) sample binary gate g_c ~ Bernoulli(1 - p_drop(c)) and apply to activations during QAT; (4) emphasize that at inference, all g_c are fixed to 1 (no gating), so the deployed graph is unchanged. Include annotations about how this ties into the overall QAT stage and preserves the gate/runtime budget.",
+      "paper_section": "Method",
+      "width": "single_column",
+      "label": "fig:method_flowchart_3",
+      "script_path": ""
+    },
+    {
+      "figure_number": 4,
+      "figure_id": "fig_runtime_quick_gate",
+      "file_path": "charts/fig_runtime_quick_gate.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/fig_runtime_quick_gate.png",
+      "title": "Runtime Overhead and Quick-Gate Constraint",
+      "caption": "Runtime comparison between the baseline float-only model and the QAT + roundtrip-aligned candidate, plotted in milliseconds with annotations for the runtime ratio and whether the quick-gate constraint (runtime ≤ 1.10× baseline) is satisfied.",
+      "paper_section": "Results",
+      "width": "single_column",
+      "label": "fig:fig_runtime_quick_gate",
+      "script_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/scripts/fig_runtime_quick_gate.py"
+    },
+    {
+      "figure_number": 5,
+      "figure_id": "fig_main_results_val_bpb",
+      "file_path": "charts/fig_main_results_val_bpb.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/fig_main_results_val_bpb.png",
+      "title": "Validation bpb Comparison: Float Training vs QAT + Roundtrip Alignment",
+      "caption": "Comparison of validation bits-per-byte (val_bpb) between the baseline float-only model and the QAT + roundtrip-aware compression alignment configuration, both under the same gate budget and artifact size limit. Lower val_bpb indicates better compression performance.",
+      "paper_section": "Results",
+      "width": "single_column",
+      "label": "fig:fig_main_results_val_bpb",
+      "script_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/scripts/fig_main_results_val_bpb.py"
+    },
+    {
+      "figure_number": 6,
+      "figure_id": "fig_delta_bpb_vs_baseline",
+      "file_path": "charts/fig_delta_bpb_vs_baseline.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/fig_delta_bpb_vs_baseline.png",
+      "title": "Change in Validation bpb Relative to Baseline",
+      "caption": "Absolute change in validation bits-per-byte (delta_bpb) of the QAT + roundtrip-aligned configuration relative to the float-only baseline, highlighting the net compression benefit after the int8+zlib roundtrip.",
+      "paper_section": "Analysis",
+      "width": "single_column",
+      "label": "fig:fig_delta_bpb_vs_baseline",
+      "script_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/scripts/fig_delta_bpb_vs_baseline.py"
+    },
+    {
+      "figure_number": 7,
+      "figure_id": "fig_gate_feasibility_overview",
+      "file_path": "charts/fig_gate_feasibility_overview.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/fig_gate_feasibility_overview.png",
+      "title": "Feasibility Under Runtime and Artifact Constraints",
+      "caption": "Summary of whether the QAT + roundtrip-aligned configuration satisfies the quick-gate runtime constraint and the 16 MB artifact size limit, providing an at-a-glance feasibility check for deployment relative to the baseline.",
+      "paper_section": "Analysis",
+      "width": "single_column",
+      "label": "fig:fig_gate_feasibility_overview",
+      "script_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/scripts/fig_gate_feasibility_overview.py"
+    }
+  ],
+  "markdown_refs": "![Figure 1: High-level pipeline overview for Parameter Golf lane_3 showing: (1) float-only training producing Baseline I; (2) staged QAT with fake quantization starting at training_frac=0.5 leading to Baseline E (QAT+teacher); (3) codec-guided distillation variant F adding an explicit zlib-based compression loss L_comp on selected tensors; (4) optional compression-biased gating variant H with training-time stochastic gates driven by per-channel zlib statistics. The diagram should also depict the int8+zlib deployment roundtrip, the 16MB artifact cap, and the quick-gate runtime constraint (runtime <= 1.10x baseline).](charts/pipeline_overview_1.png)\n\n![Figure 2: Conceptual architecture/method diagram zooming into the codec-guided distillation (Hypothesis 1). Show a float teacher network and an int8-student undergoing staged QAT. Indicate: (a) the standard distillation path with KL loss between teacher and quantized-student logits; (b) the selection of specific weight tensors or activations from the quantized student, conversion to bytes, zlib.compress call, and computation of bits-per-byte; (c) the teacher- or baseline-relative target alpha and the resulting L_comp = (L_zlib - alpha)^2 term; (d) combination into L_total = L_task + lambda_kd * L_KD + lambda_comp * L_comp. Make it clear that zlib is used sparsely during training and that deployment uses int8+zlib without extra components.](charts/architecture_diagram_2.png)\n\n![Figure 3: Flowchart detailing the compression-biased gate dropout mechanism (Hypothesis 2). Steps: (1) During selected minibatches, quantize per-channel activations, run zlib on each channel slice to obtain bpb_c, and update EMA statistics h_c; (2) compute biased drop probabilities p_drop(c) = clip(beta * (h_c - mean_h), 0, p_max); (3) sample binary gate g_c ~ Bernoulli(1 - p_drop(c)) and apply to activations during QAT; (4) emphasize that at inference, all g_c are fixed to 1 (no gating), so the deployed graph is unchanged. Include annotations about how this ties into the overall QAT stage and preserves the gate/runtime budget.](charts/method_flowchart_3.png)\n\n![Figure 4: Runtime comparison between the baseline float-only model and the QAT + roundtrip-aligned candidate, plotted in milliseconds with annotations for the runtime ratio and whether the quick-gate constraint (runtime ≤ 1.10× baseline) is satisfied.](charts/fig_runtime_quick_gate.png)\n\n![Figure 5: Comparison of validation bits-per-byte (val_bpb) between the baseline float-only model and the QAT + roundtrip-aware compression alignment configuration, both under the same gate budget and artifact size limit. Lower val_bpb indicates better compression performance.](charts/fig_main_results_val_bpb.png)\n\n![Figure 6: Absolute change in validation bits-per-byte (delta_bpb) of the QAT + roundtrip-aligned configuration relative to the float-only baseline, highlighting the net compression benefit after the int8+zlib roundtrip.](charts/fig_delta_bpb_vs_baseline.png)\n\n![Figure 7: Summary of whether the QAT + roundtrip-aligned configuration satisfies the quick-gate runtime constraint and the 16 MB artifact size limit, providing an at-a-glance feasibility check for deployment relative to the baseline.](charts/fig_gate_feasibility_overview.png)",
+  "figure_descriptions": "## AVAILABLE FIGURES (embed in the paper)\nThe following figures were generated from actual experiment data. Reference them in the appropriate paper sections using markdown image syntax: `![Caption](charts/filename.png)`\n\n**Figure 1** (`charts/pipeline_overview_1.png`) — High-level pipeline overview for Parameter Golf lane_3 showing: (1) float-only t\n  Caption: High-level pipeline overview for Parameter Golf lane_3 showing: (1) float-only training producing Baseline I; (2) staged QAT with fake quantization starting at training_frac=0.5 leading to Baseline E (QAT+teacher); (3) codec-guided distillation variant F adding an explicit zlib-based compression loss L_comp on selected tensors; (4) optional compression-biased gating variant H with training-time stochastic gates driven by per-channel zlib statistics. The diagram should also depict the int8+zlib deployment roundtrip, the 16MB artifact cap, and the quick-gate runtime constraint (runtime <= 1.10x baseline).\n  Place in: **Method** section\n\n**Figure 2** (`charts/architecture_diagram_2.png`) — Conceptual architecture/method diagram zooming into the codec-guided distillatio\n  Caption: Conceptual architecture/method diagram zooming into the codec-guided distillation (Hypothesis 1). Show a float teacher network and an int8-student undergoing staged QAT. Indicate: (a) the standard distillation path with KL loss between teacher and quantized-student logits; (b) the selection of specific weight tensors or activations from the quantized student, conversion to bytes, zlib.compress call, and computation of bits-per-byte; (c) the teacher- or baseline-relative target alpha and the resulting L_comp = (L_zlib - alpha)^2 term; (d) combination into L_total = L_task + lambda_kd * L_KD + lambda_comp * L_comp. Make it clear that zlib is used sparsely during training and that deployment uses int8+zlib without extra components.\n  Place in: **Method** section\n\n**Figure 3** (`charts/method_flowchart_3.png`) — Flowchart detailing the compression-biased gate dropout mechanism (Hypothesis 2)\n  Caption: Flowchart detailing the compression-biased gate dropout mechanism (Hypothesis 2). Steps: (1) During selected minibatches, quantize per-channel activations, run zlib on each channel slice to obtain bpb_c, and update EMA statistics h_c; (2) compute biased drop probabilities p_drop(c) = clip(beta * (h_c - mean_h), 0, p_max); (3) sample binary gate g_c ~ Bernoulli(1 - p_drop(c)) and apply to activations during QAT; (4) emphasize that at inference, all g_c are fixed to 1 (no gating), so the deployed graph is unchanged. Include annotations about how this ties into the overall QAT stage and preserves the gate/runtime budget.\n  Place in: **Method** section\n\n**Figure 4** (`charts/fig_runtime_quick_gate.png`) — Runtime Overhead and Quick-Gate Constraint\n  Caption: Runtime comparison between the baseline float-only model and the QAT + roundtrip-aligned candidate, plotted in milliseconds with annotations for the runtime ratio and whether the quick-gate constraint (runtime ≤ 1.10× baseline) is satisfied.\n  Place in: **Results** section\n\n**Figure 5** (`charts/fig_main_results_val_bpb.png`) — Validation bpb Comparison: Float Training vs QAT + Roundtrip Alignment\n  Caption: Comparison of validation bits-per-byte (val_bpb) between the baseline float-only model and the QAT + roundtrip-aware compression alignment configuration, both under the same gate budget and artifact size limit. Lower val_bpb indicates better compression performance.\n  Place in: **Results** section\n\n**Figure 6** (`charts/fig_delta_bpb_vs_baseline.png`) — Change in Validation bpb Relative to Baseline\n  Caption: Absolute change in validation bits-per-byte (delta_bpb) of the QAT + roundtrip-aligned configuration relative to the float-only baseline, highlighting the net compression benefit after the int8+zlib roundtrip.\n  Place in: **Analysis** section\n\n**Figure 7** (`charts/fig_gate_feasibility_overview.png`) — Feasibility Under Runtime and Artifact Constraints\n  Caption: Summary of whether the QAT + roundtrip-aligned configuration satisfies the quick-gate runtime constraint and the 16 MB artifact size limit, providing an at-a-glance feasibility check for deployment relative to the baseline.\n  Place in: **Analysis** section\n\n\nFor each figure referenced, write a descriptive caption and discuss what the figure shows in 2-3 sentences.\n",
+  "output_dir": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts",
+  "manifest_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/figure_manifest.json",
+  "figure_count": 7,
+  "passed_count": 7,
+  "total_llm_calls": 11,
+  "total_tokens": 15790,
+  "elapsed_sec": 93.37204727700009
+}

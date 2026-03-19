@@ -1,0 +1,300 @@
+corpora:
+  benchmarks:
+  - name: enwik8 benchmark
+    notes: Language modeling on enwik8, bits-per-character metrics, compression-focused
+      LM papers.
+  - name: text8 benchmark
+    notes: Alternate small text corpus; may provide cross-checks for generalization.
+  venue_targets:
+  - ICLR
+  - NeurIPS
+  - ICML
+  - MLSys
+  - ACL
+key_terms:
+  compression:
+  - zlib
+  - Deflate
+  - gzip
+  - model compression
+  - neural network compression
+  - weight compression
+  - entropy coding
+  - run-length encoding
+  - compressibility regularization
+  core:
+  - quantization-aware training
+  - QAT
+  - int8 quantization
+  - post-training quantization
+  - perplexity
+  - bits per byte
+  - bits per character
+  - bpc
+  - val_bpb
+  - validation negative log-likelihood
+  efficiency_constraints:
+  - model size limit
+  - artifact budget
+  - parameter budget
+  - latency overhead
+  - training runtime overhead
+  - performance vs efficiency trade-off
+  proxies_and_losses:
+  - smooth quantization
+  - straight-through estimator
+  - entropy regularization
+  - L1 regularization
+  - structured sparsity
+  - group lasso
+  - quantization proxy loss
+mapping_to_problem_tree:
+  sub_question_1_objective_and_measurement_design:
+    from_sources:
+    - S1
+    - S6
+    - S7
+    needed_info:
+    - Exact enwik8 split and standard val_bpb/bpc computation.
+    - Conventions on what counts towards model size and runtime in compression/QAT
+      papers.
+    - Examples of roundtrip-style evaluation loops (e.g., quantize, serialize, compress,
+      reload, evaluate).
+  sub_question_2_staged_qat_and_proxy_loss_design:
+    from_sources:
+    - S2
+    - S4
+    - S5
+    needed_info:
+    - Staged/curriculum QAT schedules and smooth quantization techniques.
+    - Differentiable proxies for weight compressibility (entropy, sparsity, run-length).
+    - Reported stability tricks when transitioning from float to hard quantization.
+  sub_question_3_gate_feasible_baseline_and_architecture:
+    from_sources:
+    - S1
+    - S2
+    - S3
+    - S6
+    needed_info:
+    - Small enwik8 architectures and their bpc/val_bpb vs parameter count.
+    - Model size and zlib-compressed checkpoint sizes for quantized vs float models,
+      if reported.
+    - Baseline QAT vs float-only comparisons under size/runtime constraints.
+  sub_question_4_roundtrip_frequency_and_overhead_control:
+    from_sources:
+    - S2
+    - S3
+    - S7
+    needed_info:
+    - How often QAT papers run validation on quantized models.
+    - Strategies to bound runtime overhead from auxiliary evaluation loops.
+    - Any reported adaptive scheduling of quantization or evaluation.
+  sub_question_5_ablations_generalization_failure_modes:
+    from_sources:
+    - S2
+    - S4
+    - S8
+    needed_info:
+    - Standard ablations in QAT and compression-aware training (stages, proxies, seeds).
+    - Examples of detecting and reporting degenerate compression/accuracy trade-offs.
+    - Any evidence of portability to other codecs or datasets.
+objective:
+  hypotheses:
+  - Staged QAT with compressibility-aware proxy losses aligned to int8+zlib roundtrip
+    yields lower post-roundtrip val_bpb than float-only training under the same gate
+    budget.
+  - A small number of true int8+zlib roundtrip evaluations during training is sufficient
+    to guide proxies without violating the 1.10× runtime gate.
+  primary: Design and evaluate staged, roundtrip-aware QAT that improves post-roundtrip
+    val_bpb on enwik8 vs float-only and naive QAT, under ≤16MB artifact and ≤1.10×
+    runtime gates.
+retrieval_plan:
+  steps:
+  - actions:
+    - Use general web search (e.g., Google Scholar) for 'enwik8 bits per character
+      transformer' and identify canonical evaluation splits and protocols.
+    - Collect 3–5 key papers on enwik8 LM/compression (e.g., Transformer-based text
+      compressors, recurrent baselines) and extract details on val_bpb/bpc computation
+      and model size reporting.
+    description: Anchor on enwik8 LM/compression literature and bpc/val_bpb evaluation
+      protocols.
+    step: 1
+    targets:
+    - S1
+    - S6
+  - actions:
+    - Search for 'int8 quantization-aware training transformer language model' and
+      'progressive quantization aware training'.
+    - 'Select 3–7 representative QAT papers (especially with NLP or Transformer focus)
+      and record: quantization scheme, training schedule, overhead, and evaluation.'
+    description: Survey QAT for language models and general QAT best practices.
+    step: 2
+    targets:
+    - S2
+    - S5
+    - S8
+  - actions:
+    - Search for 'neural network weight compression zlib' and 'codec-aware training
+      gzip zlib'.
+    - Identify any works that model the entropy or run-length properties of weights
+      and tie them to gzip/zlib code length.
+    - 'If few direct results, expand to: ''model compression with entropy coding of
+      weights'', focusing on how weight distributions affect further compression.'
+    description: Investigate model checkpoint compression and codec-aware methods.
+    step: 3
+    targets:
+    - S3
+    - S4
+  - actions:
+    - Search for 'compact transformer enwik8 bpc' and extract model parameter counts
+      and reported runtime or FLOPs.
+    - Search for 'quantized enwik8 model size' and 'efficient neural text compression
+      enwik8' to bound feasible architectures under a 16MB artifact budget.
+    description: Collect size/runtime-constrained architectures and baseline numbers.
+    step: 4
+    targets:
+    - S1
+    - S2
+    - S6
+    - S7
+  - actions:
+    - From QAT and compression papers, record how often auxiliary evaluations are
+      run and how overhead is measured.
+    - Collect ablation strategies and robustness checks relevant to staged QAT and
+      compressibility proxies.
+    description: Synthesize practices for overhead control and ablations.
+    step: 5
+    targets:
+    - S7
+    - S8
+search_goals:
+- id: S1
+  label: Define val_bpb, roundtrip, and gates; find prior art on evaluation protocols.
+  query_templates:
+  - enwik8 bits per character evaluation protocol val bpc validation split
+  - '"enwik8" language model bits per character quantization'
+  - neural text compression "enwik8" "bits-per-character"
+  - neural network compression evaluation protocol model size runtime overhead
+  - quantization-aware training evaluation on language models bits per token
+  questions:
+  - How do language-model-based compressors compute bits-per-byte or bits-per-character
+    on enwik8?
+  - What is the standard split and evaluation protocol for enwik8 in LM/compression
+    papers?
+  - How do prior works measure model size and runtime overhead in compressed/quantized
+    LM settings?
+- id: S2
+  label: Quantization-aware training for int8 LMs and compressors.
+  query_templates:
+  - int8 quantization aware training transformer language model enwik8
+  - quantization-aware training "bits per character"
+  - neural network QAT int8 post-training quantization comparison
+  - int8 transformer QAT runtime overhead 1.1x
+  questions:
+  - What are state-of-the-art QAT methods for int8 Transformer language models?
+  - How do these methods affect perplexity or bpc on text benchmarks?
+  - What runtime overhead is typically reported for QAT vs float training?
+- id: S3
+  label: Model-size-focused compression and storage (zlib/Deflate interaction with
+    quantized weights).
+  query_templates:
+  - neural network weight compression zlib deflate int8
+  - model checkpoint compression gzip deflate quantized weights
+  - compressibility of quantized neural network weights entropy run length
+  - codec-aware training for neural network weights zlib
+  questions:
+  - How are quantized neural network weights typically serialized and further compressed
+    (e.g., with zlib/Deflate)?
+  - Are there works on entropy modeling or run-length optimization of quantized weights
+    before generic compression?
+  - What is known about the compressibility of int8 weight tensors under Deflate/zlib?
+- id: S4
+  label: Proxy objectives for codec-aware / compressibility-aware training.
+  query_templates:
+  - compressibility-aware training neural networks entropy regularization gzip
+  - codec-aware training differentiable proxy gzip zlib
+  - run-length regularization neural network weights compressibility
+  - entropy of weights proxy for model size regularization
+  questions:
+  - What differentiable proxies have been used to encourage compressibility of model
+    parameters or activations?
+  - How well do sparsity, entropy, or run-length proxies correlate with actual codec
+    sizes (e.g., gzip, zlib)?
+  - Are there methods that perform codec-aware optimization for neural networks or
+    other parametric models?
+- id: S5
+  label: Staged / curriculum QAT schedules and smooth quantization.
+  query_templates:
+  - staged quantization aware training curriculum schedule transformer
+  - progressive quantization training soft to hard int8
+  - annealing quantization noise straight-through estimator schedule
+  - multi-stage QAT hard int8 final phase language model
+  questions:
+  - What staged or curriculum-based QAT schemes exist, especially for Transformers
+    or language models?
+  - How is smooth/annealed quantization implemented (e.g., soft-to-hard schedules,
+    STE variants)?
+  - What are typical phase lengths and hyperparameters for multi-stage QAT?
+- id: S6
+  label: Architecture and baseline design under strict size/runtime budgets.
+  query_templates:
+  - small transformer language model enwik8 bits per character
+  - compact neural text compression enwik8 bpc
+  - model size vs performance enwik8 neural compressor
+  - int8 transformer enwik8 parameter count runtime
+  questions:
+  - What are example compact Transformer or RNN architectures used for enwik8 within
+    small parameter budgets?
+  - How do state-of-the-art small models report bpc/val_bpb on enwik8?
+  - What are typical model size and runtime trade-offs for quantized vs full-precision
+    models on enwik8?
+- id: S7
+  label: 'Systems aspects: overhead of roundtrip checks and mixed-precision training.'
+  query_templates:
+  - periodic quantized evaluation during training overhead
+  - measure training runtime overhead 1.1x baseline quantization
+  - lightweight evaluation loops compressibility runtime
+  questions:
+  - How do prior works measure and control runtime overhead from auxiliary evaluation
+    loops (e.g., periodic quantized evaluation)?
+  - What strategies exist to amortize or approximate expensive evaluation signals
+    during training?
+  - What measurement methodologies are standard for reporting ≤X× runtime gates?
+- id: S8
+  label: Ablations and robustness in QAT and compression-aware training.
+  query_templates:
+  - quantization aware training ablation study components
+  - robustness analysis neural network compression seeds architecture variants
+  - degenerate solutions in compression aware training model size vs accuracy
+  questions:
+  - What ablation practices are standard in QAT papers (e.g., stages, proxies, seeds)?
+  - How do authors test robustness to architecture or hyperparameter variations in
+    quantization/compression contexts?
+  - How are degenerate solutions (e.g., too-small models, over-regularized weights)
+    detected and reported?
+selection_criteria:
+  exclusion:
+  - Pure hardware or ASIC design papers without training/evaluation protocol details.
+  - Non-ML compression papers that do not involve learned models or do not report
+    parameter-level statistics.
+  inclusion:
+  - Peer-reviewed or well-cited preprints (arXiv) on enwik8 language modeling or neural
+    compression.
+  - Papers on quantization-aware training, especially for Transformers and/or int8
+    quantization.
+  - Works discussing compression of model checkpoints, weight entropy, or codec-aware
+    optimization.
+topic: 'Parameter Golf val_bpb minimization — lane_3: staged QAT aligned to int8+zlib
+  roundtrip'
+validation_plan:
+  cross_reference:
+  - Verify that the enwik8 split and val_bpb computation are consistent across at
+    least two independent sources.
+  - Cross-check any claimed runtime overhead numbers (e.g., 1.1×) by comparing methodology
+    sections across multiple QAT papers.
+  - For any codec-aware or compressibility-regularization techniques, verify their
+    impact on both model size and accuracy from results + ablations.
+  reproducibility_checks:
+  - Prefer sources with open code or detailed experimental sections.
+  - Note any discrepancies in reported enwik8 metrics (e.g., bpc vs bpb vs perplexity)
+    and normalize definitions for the current study.

@@ -1,0 +1,11 @@
+{
+  "topic": "Parameter Golf val_bpb minimization \u2014 lane_3: QAT + roundtrip-aware compression alignment. Hypothesis: If we enable staged QAT aligned to int8+zlib roundtrip, post-roundtrip val_bpb will improve versus float-only training under the same gate budget. Artifact limit 16MB. Quick-gate: runtime <= 1.10x baseline.",
+  "web_results_count": 0,
+  "scholar_papers_count": 0,
+  "crawled_pages_count": 0,
+  "pdf_extractions_count": 0,
+  "has_search_answer": false,
+  "elapsed_seconds": 7.748757745997864,
+  "web_results": [],
+  "scholar_papers": []
+}

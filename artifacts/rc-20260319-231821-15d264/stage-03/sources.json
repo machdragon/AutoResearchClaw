@@ -1,0 +1,87 @@
+{
+  "sources": [
+    {
+      "id": "SRC1",
+      "name": "Google Scholar \u2013 enwik8 LM & compression evaluation protocols",
+      "type": "web",
+      "url": "https://scholar.google.com",
+      "status": "planned",
+      "query": "\"enwik8\" \"bits per character\" transformer language model evaluation protocol",
+      "verified_at": null
+    },
+    {
+      "id": "SRC2",
+      "name": "arXiv \u2013 quantization-aware training for Transformer / LM",
+      "type": "web",
+      "url": "https://arxiv.org",
+      "status": "planned",
+      "query": "\"quantization-aware training\" int8 transformer language model",
+      "verified_at": null
+    },
+    {
+      "id": "SRC3",
+      "name": "arXiv/Scholar \u2013 neural text compression on enwik8",
+      "type": "web",
+      "url": "https://arxiv.org",
+      "status": "planned",
+      "query": "\"neural text compression\" enwik8 bits-per-character",
+      "verified_at": null
+    },
+    {
+      "id": "SRC4",
+      "name": "Literature on checkpoint / weight compression with zlib/Deflate",
+      "type": "web",
+      "url": "https://scholar.google.com",
+      "status": "planned",
+      "query": "\"neural network\" weight compression zlib deflate int8",
+      "verified_at": null
+    },
+    {
+      "id": "SRC5",
+      "name": "Codec-aware / compressibility-aware training methods",
+      "type": "web",
+      "url": "https://scholar.google.com",
+      "status": "planned",
+      "query": "\"codec-aware\" training gzip zlib neural network",
+      "verified_at": null
+    },
+    {
+      "id": "SRC6",
+      "name": "Staged / progressive QAT and smooth quantization",
+      "type": "web",
+      "url": "https://scholar.google.com",
+      "status": "planned",
+      "query": "\"progressive quantization\" \"staged\" \"quantization-aware training\" transformer",
+      "verified_at": null
+    },
+    {
+      "id": "SRC7",
+      "name": "Compact enwik8 architectures and small LMs",
+      "type": "web",
+      "url": "https://scholar.google.com",
+      "status": "planned",
+      "query": "\"small transformer\" enwik8 \"bits per character\"",
+      "verified_at": null
+    },
+    {
+      "id": "SRC8",
+      "name": "Systems/MLSys papers on QAT overhead and evaluation loops",
+      "type": "web",
+      "url": "https://scholar.google.com",
+      "status": "planned",
+      "query": "\"quantization-aware training\" runtime overhead evaluation frequency",
+      "verified_at": null
+    },
+    {
+      "id": "SRC9",
+      "name": "Ablation and robustness studies in QAT / compression-aware training",
+      "type": "web",
+      "url": "https://scholar.google.com",
+      "status": "planned",
+      "query": "\"quantizationaware training\" ablation study compressibility",
+      "verified_at": null
+    }
+  ],
+  "count": 9,
+  "generated": "2026-03-19T23:20:06+00:00"
+}

@@ -1,0 +1,97 @@
+{
+  "manifest": [
+    {
+      "figure_number": 1,
+      "figure_id": "pipeline_overview_1",
+      "file_path": "charts/pipeline_overview_1.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/pipeline_overview_1.png",
+      "title": "End-to-end pipeline for Parameter Golf lane_3: data flows from training data int",
+      "caption": "End-to-end pipeline for Parameter Golf lane_3: data flows from training data into a float32 teacher model and a student model that undergoes staged QAT. Show (1) float-only training segment, (2) QAT phase with fake-quant nodes, (3) roundtrip path where student weights/activations are quantized to int8 and then compressed with zlib, and (4) evaluation of post-roundtrip val_bpb under a 16MB artifact cap and \u22641.10\u00d7 runtime constraint. Annotate where loss terms L_task, KD loss, quantization error loss, and compression-aware losses plug into the training loop.",
+      "paper_section": "Method",
+      "width": "single_column",
+      "label": "fig:pipeline_overview_1",
+      "script_path": ""
+    },
+    {
+      "figure_number": 2,
+      "figure_id": "architecture_diagram_2",
+      "file_path": "charts/architecture_diagram_2.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/architecture_diagram_2.png",
+      "title": "Diagram of the compression-teacher distillation setup (Hypothesis 1). Show a flo",
+      "caption": "Diagram of the compression-teacher distillation setup (Hypothesis 1). Show a float teacher network producing logits and (optionally) feature maps for distillation, alongside a student network that passes through fake-quant nodes to approximate int8. Highlight selected tensors (e.g., final-layer weights or activations) that are routed through a zlib compress/decompress block during training to compute L_zlib. Illustrate computation of teacher-relative compressibility target alpha and the additional L_comp term, then aggregation into L_total = L_task + lambda_kd * L_KD + lambda_comp * L_comp.",
+      "paper_section": "Method",
+      "width": "single_column",
+      "label": "fig:architecture_diagram_2",
+      "script_path": ""
+    },
+    {
+      "figure_number": 3,
+      "figure_id": "method_flowchart_3",
+      "file_path": "charts/method_flowchart_3.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/method_flowchart_3.png",
+      "title": "Flowchart for compression-biased stochastic gating (Hypothesis 2). Steps: (1) pe",
+      "caption": "Flowchart for compression-biased stochastic gating (Hypothesis 2). Steps: (1) periodically sample a minibatch, quantize per-channel activations, and pass channel-wise bytes through zlib to get bpb_c; (2) update EMA statistics h_c for each channel/head; (3) for each training step, compute p_drop(c) from h_c relative to the mean compressibility, sample binary gates g_c, and apply them to activations; (4) in inference, all gates fixed to 1 (no gating). Include annotations that this operates only during QAT, does not change the deployed graph, and consumes sparse zlib calls.",
+      "paper_section": "Method",
+      "width": "single_column",
+      "label": "fig:method_flowchart_3",
+      "script_path": ""
+    },
+    {
+      "figure_number": 4,
+      "figure_id": "fig_main_results_val_bpb",
+      "file_path": "charts/fig_main_results_val_bpb.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/fig_main_results_val_bpb.png",
+      "title": "Effect of QAT + Roundtrip-Aware Compression on Validation bpb",
+      "caption": "Comparison of validation bits-per-byte (val_bpb) between the float-only baseline and the proposed staged QAT with int8+zlib roundtrip alignment under the same gate budget. Lower val_bpb indicates better compression performance, directly testing the hypothesis that roundtrip-aware QAT improves post-roundtrip validation compression quality versus float-only training.",
+      "paper_section": "Results",
+      "width": "single_column",
+      "label": "fig:fig_main_results_val_bpb",
+      "script_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/scripts/fig_main_results_val_bpb.py"
+    },
+    {
+      "figure_number": 5,
+      "figure_id": "fig_runtime_quick_gate",
+      "file_path": "charts/fig_runtime_quick_gate.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/fig_runtime_quick_gate.png",
+      "title": "Runtime Overhead and Quick-Gate Constraint",
+      "caption": "Runtime comparison between the float-only baseline and the proposed QAT + roundtrip-aware compression lane, showing absolute runtime (ms) and the runtime ratio relative to baseline. A dashed reference line at 1.10\u00d7 indicates the quick-gate threshold; bars above this line would violate the runtime constraint, while the quick_gate_passed indicator confirms whether the candidate configuration satisfies the artifact limit of \u22641.10\u00d7 baseline runtime.",
+      "paper_section": "Results",
+      "width": "single_column",
+      "label": "fig:fig_runtime_quick_gate",
+      "script_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/scripts/fig_runtime_quick_gate.py"
+    },
+    {
+      "figure_number": 6,
+      "figure_id": "concept_illustration_4",
+      "file_path": "charts/concept_illustration_4.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/concept_illustration_4.png",
+      "title": "Illustration of evaluation constraints and metrics. Show a schematic comparing b",
+      "caption": "Illustration of evaluation constraints and metrics. Show a schematic comparing baseline float-only + post-hoc quantization vs multiple QAT variants (standard QAT+distillation, codec-guided QAT, compression-biased gating). For each, depict the measurement points for val_bpb after int8+zlib roundtrip, runtime (with a 1.10\u00d7 quick-gate threshold), and artifact size with a 16MB cap. Emphasize that all methods share the same architecture and int8 scheme and are judged in terms of post-roundtrip behavior.",
+      "paper_section": "Results",
+      "width": "single_column",
+      "label": "fig:concept_illustration_4",
+      "script_path": ""
+    },
+    {
+      "figure_number": 7,
+      "figure_id": "fig_delta_bpb_improvement",
+      "file_path": "charts/fig_delta_bpb_improvement.png",
+      "absolute_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/fig_delta_bpb_improvement.png",
+      "title": "Change in Validation bpb Relative to Baseline",
+      "caption": "Delta in validation bits-per-byte (delta_bpb) for the QAT + roundtrip-aware method relative to the float-only baseline, where negative values correspond to an improvement in compression. This figure isolates the net effect size of the proposed lane on val_bpb, complementing the absolute metrics in the main results figure.",
+      "paper_section": "Analysis",
+      "width": "single_column",
+      "label": "fig:fig_delta_bpb_improvement",
+      "script_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/scripts/fig_delta_bpb_improvement.py"
+    }
+  ],
+  "markdown_refs": "![Figure 1: End-to-end pipeline for Parameter Golf lane_3: data flows from training data into a float32 teacher model and a student model that undergoes staged QAT. Show (1) float-only training segment, (2) QAT phase with fake-quant nodes, (3) roundtrip path where student weights/activations are quantized to int8 and then compressed with zlib, and (4) evaluation of post-roundtrip val_bpb under a 16MB artifact cap and \u22641.10\u00d7 runtime constraint. Annotate where loss terms L_task, KD loss, quantization error loss, and compression-aware losses plug into the training loop.](charts/pipeline_overview_1.png)\n\n![Figure 2: Diagram of the compression-teacher distillation setup (Hypothesis 1). Show a float teacher network producing logits and (optionally) feature maps for distillation, alongside a student network that passes through fake-quant nodes to approximate int8. Highlight selected tensors (e.g., final-layer weights or activations) that are routed through a zlib compress/decompress block during training to compute L_zlib. Illustrate computation of teacher-relative compressibility target alpha and the additional L_comp term, then aggregation into L_total = L_task + lambda_kd * L_KD + lambda_comp * L_comp.](charts/architecture_diagram_2.png)\n\n![Figure 3: Flowchart for compression-biased stochastic gating (Hypothesis 2). Steps: (1) periodically sample a minibatch, quantize per-channel activations, and pass channel-wise bytes through zlib to get bpb_c; (2) update EMA statistics h_c for each channel/head; (3) for each training step, compute p_drop(c) from h_c relative to the mean compressibility, sample binary gates g_c, and apply them to activations; (4) in inference, all gates fixed to 1 (no gating). Include annotations that this operates only during QAT, does not change the deployed graph, and consumes sparse zlib calls.](charts/method_flowchart_3.png)\n\n![Figure 4: Comparison of validation bits-per-byte (val_bpb) between the float-only baseline and the proposed staged QAT with int8+zlib roundtrip alignment under the same gate budget. Lower val_bpb indicates better compression performance, directly testing the hypothesis that roundtrip-aware QAT improves post-roundtrip validation compression quality versus float-only training.](charts/fig_main_results_val_bpb.png)\n\n![Figure 5: Runtime comparison between the float-only baseline and the proposed QAT + roundtrip-aware compression lane, showing absolute runtime (ms) and the runtime ratio relative to baseline. A dashed reference line at 1.10\u00d7 indicates the quick-gate threshold; bars above this line would violate the runtime constraint, while the quick_gate_passed indicator confirms whether the candidate configuration satisfies the artifact limit of \u22641.10\u00d7 baseline runtime.](charts/fig_runtime_quick_gate.png)\n\n![Figure 6: Illustration of evaluation constraints and metrics. Show a schematic comparing baseline float-only + post-hoc quantization vs multiple QAT variants (standard QAT+distillation, codec-guided QAT, compression-biased gating). For each, depict the measurement points for val_bpb after int8+zlib roundtrip, runtime (with a 1.10\u00d7 quick-gate threshold), and artifact size with a 16MB cap. Emphasize that all methods share the same architecture and int8 scheme and are judged in terms of post-roundtrip behavior.](charts/concept_illustration_4.png)\n\n![Figure 7: Delta in validation bits-per-byte (delta_bpb) for the QAT + roundtrip-aware method relative to the float-only baseline, where negative values correspond to an improvement in compression. This figure isolates the net effect size of the proposed lane on val_bpb, complementing the absolute metrics in the main results figure.](charts/fig_delta_bpb_improvement.png)",
+  "figure_descriptions": "## AVAILABLE FIGURES (embed in the paper)\nThe following figures were generated from actual experiment data. Reference them in the appropriate paper sections using markdown image syntax: `![Caption](charts/filename.png)`\n\n**Figure 1** (`charts/pipeline_overview_1.png`) \u2014 End-to-end pipeline for Parameter Golf lane_3: data flows from training data int\n  Caption: End-to-end pipeline for Parameter Golf lane_3: data flows from training data into a float32 teacher model and a student model that undergoes staged QAT. Show (1) float-only training segment, (2) QAT phase with fake-quant nodes, (3) roundtrip path where student weights/activations are quantized to int8 and then compressed with zlib, and (4) evaluation of post-roundtrip val_bpb under a 16MB artifact cap and \u22641.10\u00d7 runtime constraint. Annotate where loss terms L_task, KD loss, quantization error loss, and compression-aware losses plug into the training loop.\n  Place in: **Method** section\n\n**Figure 2** (`charts/architecture_diagram_2.png`) \u2014 Diagram of the compression-teacher distillation setup (Hypothesis 1). Show a flo\n  Caption: Diagram of the compression-teacher distillation setup (Hypothesis 1). Show a float teacher network producing logits and (optionally) feature maps for distillation, alongside a student network that passes through fake-quant nodes to approximate int8. Highlight selected tensors (e.g., final-layer weights or activations) that are routed through a zlib compress/decompress block during training to compute L_zlib. Illustrate computation of teacher-relative compressibility target alpha and the additional L_comp term, then aggregation into L_total = L_task + lambda_kd * L_KD + lambda_comp * L_comp.\n  Place in: **Method** section\n\n**Figure 3** (`charts/method_flowchart_3.png`) \u2014 Flowchart for compression-biased stochastic gating (Hypothesis 2). Steps: (1) pe\n  Caption: Flowchart for compression-biased stochastic gating (Hypothesis 2). Steps: (1) periodically sample a minibatch, quantize per-channel activations, and pass channel-wise bytes through zlib to get bpb_c; (2) update EMA statistics h_c for each channel/head; (3) for each training step, compute p_drop(c) from h_c relative to the mean compressibility, sample binary gates g_c, and apply them to activations; (4) in inference, all gates fixed to 1 (no gating). Include annotations that this operates only during QAT, does not change the deployed graph, and consumes sparse zlib calls.\n  Place in: **Method** section\n\n**Figure 4** (`charts/fig_main_results_val_bpb.png`) \u2014 Effect of QAT + Roundtrip-Aware Compression on Validation bpb\n  Caption: Comparison of validation bits-per-byte (val_bpb) between the float-only baseline and the proposed staged QAT with int8+zlib roundtrip alignment under the same gate budget. Lower val_bpb indicates better compression performance, directly testing the hypothesis that roundtrip-aware QAT improves post-roundtrip validation compression quality versus float-only training.\n  Place in: **Results** section\n\n**Figure 5** (`charts/fig_runtime_quick_gate.png`) \u2014 Runtime Overhead and Quick-Gate Constraint\n  Caption: Runtime comparison between the float-only baseline and the proposed QAT + roundtrip-aware compression lane, showing absolute runtime (ms) and the runtime ratio relative to baseline. A dashed reference line at 1.10\u00d7 indicates the quick-gate threshold; bars above this line would violate the runtime constraint, while the quick_gate_passed indicator confirms whether the candidate configuration satisfies the artifact limit of \u22641.10\u00d7 baseline runtime.\n  Place in: **Results** section\n\n**Figure 6** (`charts/concept_illustration_4.png`) \u2014 Illustration of evaluation constraints and metrics. Show a schematic comparing b\n  Caption: Illustration of evaluation constraints and metrics. Show a schematic comparing baseline float-only + post-hoc quantization vs multiple QAT variants (standard QAT+distillation, codec-guided QAT, compression-biased gating). For each, depict the measurement points for val_bpb after int8+zlib roundtrip, runtime (with a 1.10\u00d7 quick-gate threshold), and artifact size with a 16MB cap. Emphasize that all methods share the same architecture and int8 scheme and are judged in terms of post-roundtrip behavior.\n  Place in: **Results** section\n\n**Figure 7** (`charts/fig_delta_bpb_improvement.png`) \u2014 Change in Validation bpb Relative to Baseline\n  Caption: Delta in validation bits-per-byte (delta_bpb) for the QAT + roundtrip-aware method relative to the float-only baseline, where negative values correspond to an improvement in compression. This figure isolates the net effect size of the proposed lane on val_bpb, complementing the absolute metrics in the main results figure.\n  Place in: **Analysis** section\n\n\nFor each figure referenced, write a descriptive caption and discuss what the figure shows in 2-3 sentences.\n",
+  "output_dir": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts",
+  "manifest_path": "/home/alex/Projects/AutoResearchClaw/artifacts/rc-20260319-231821-15d264/stage-14/charts/figure_manifest.json",
+  "figure_count": 7,
+  "passed_count": 7,
+  "total_llm_calls": 4,
+  "total_tokens": 5074,
+  "elapsed_sec": 59.396113356997375
+}

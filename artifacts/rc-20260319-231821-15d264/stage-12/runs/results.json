@@ -1,0 +1,24 @@
+{
+  "hyperparameters": {
+    "condition": "full_staged_QAT",
+    "qat_enabled": true,
+    "qat_start_frac": 0.5,
+    "qat_group_size": 32,
+    "compression_reg_enabled": true,
+    "compression_reg_lambda": 0.0001,
+    "compression_reg_scope": "final_proj,embed",
+    "compression_reg_target": "teacher",
+    "quant_error_weight": 1.0,
+    "fake_quant_strength": 1.0,
+    "seed": 1337
+  },
+  "metrics": {
+    "val_bpb": 3.3919,
+    "candidate_runtime_ms": 80894.38009262085,
+    "baseline_val_bpb": 3.37944261,
+    "baseline_runtime_ms": 62992.0,
+    "delta_bpb": 0.012457390000000235,
+    "runtime_ratio": 1.2842008523720607,
+    "quick_gate_passed": 0.0
+  }
+}

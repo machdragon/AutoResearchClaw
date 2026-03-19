@@ -1,0 +1,133 @@
+[
+  {
+    "figure_id": "fig_main_results_comparison",
+    "passed": false,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "critical",
+        "message": "The script title and caption describe a comparison between float-only and QAT+roundtrip-aligned models, but the plot contains only a single bar (one condition: 'metrics'). This does not visually convey the intended comparison and is misleading given the stated purpose."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "critical",
+        "message": "Error bars are included but the confidence interval bounds (ci_low and ci_high) are identical to the mean values, resulting in zero-length error bars. This adds visual clutter without conveying uncertainty and may confuse readers."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The x-axis category label 'metrics' is generic and does not correspond to the description in the caption or title (which refer to float-only vs. QAT+roundtrip). More descriptive condition labels are needed to match the narrative."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "There is no legend. For a comparison figure (as implied by the title and caption), a legend distinguishing float-only vs. QAT+roundtrip (or similar) would be expected if multiple conditions were plotted."
+      }
+    ],
+    "issue_count": 4
+  },
+  {
+    "figure_id": "fig_runtime_overhead_quick_gate",
+    "passed": false,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Figure and savefig DPI are correctly set to 300, which is acceptable for publication. If the venue requires print-quality figures, consider 600 DPI, but this is not strictly necessary."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Font sizes are mostly appropriate (title=12pt, labels=10pt, ticks and legend=9pt). This is borderline but generally acceptable for NeurIPS/ICLR/ICML; if space allows, consider slightly larger tick/legend text (10pt) for better readability in print."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Colors are taken from a custom, documented colorblind-safe palette and are not the default matplotlib colors. However, only a single bar is used here, so the color distinction is trivial; ensure that the same palette is consistently used across all related figures for coherence."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "tight_layout() is correctly used and savefig.bbox is set to 'tight', which is good. For multi-panel figures, also consider constrained_layout=True at figure creation, but for this simple single-axis plot the current layout is adequate."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The style attempts to use 'science'/'ieee' and falls back to 'seaborn-whitegrid' or default. This is good, but it introduces some variability across environments. The light y-axis grid with axisbelow=True is clean and professional, though you might consider turning off the top and right spines explicitly for a more standard academic look."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "No legend is used. Given the caption and axis label ('Runtime (ms) and Runtime Ratio'), it is unclear how both absolute runtime and runtime ratio are represented in the graphic—only a single bar with error bars is drawn. If only absolute runtime is shown, adjust the label to avoid confusion; if both quantities are intended, add a legend and likely a secondary axis."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "critical",
+        "message": "The chart title and caption describe a runtime comparison between a baseline float-only model and a QAT+roundtrip-aligned model, including a quick-gate threshold at 1.10×. However, the plot only has a single bar for a single condition ('metrics'), no baseline vs. proposed comparison, and no horizontal line at 1.10×. The chart type (single bar with error bar) does not match the described comparative narrative; at minimum, two bars (baseline vs. QAT+roundtrip) and a dashed horizontal reference line at the 1.10× threshold are needed, or a more suitable representation (e.g., grouped bars or a ratio plot)."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Error bars are computed but ci_low and ci_high are identical to the values, so the visual conveys no uncertainty. If these are point estimates with no variance, remove the error bars to avoid implying uncertainty that does not exist; if CIs are intended, use actual interval values."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The x-axis category label is 'metrics' while the axis label is 'Training / Deployment Strategy', and the caption refers to 'baseline float-only' and 'QAT+roundtrip-aligned' models. This mismatch in terminology may confuse readers; use explicit strategy names on the x-axis (e.g., 'Baseline (float)', 'QAT + roundtrip') to align with the caption and title."
+      }
+    ],
+    "issue_count": 9
+  },
+  {
+    "figure_id": "fig_bitrate_vs_runtime_tradeoff",
+    "passed": false,
+    "issues": [
+      {
+        "type": "visual_quality",
+        "severity": "critical",
+        "message": "Script is syntactically incomplete: trailing line `cap` at the end will raise a NameError or SyntaxError and prevent figure generation. The caption is not implemented (e.g., missing fig.text or similar) and this line should be removed or replaced."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "DPI is correctly set to 300 for both `figure.dpi` and `savefig.dpi`, which is suitable for publication. No issue here."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Font sizes meet minimum publication guidelines: title=12pt, axis labels=10pt, ticks and legend≈9pt. For NeurIPS/ICML/ICLR figures this is acceptable, though increasing label/legend to 11–12pt could improve readability in dense multi-panel layouts."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Color palette is explicitly colorblind-safe (Okabe–Ito-like), and avoids default matplotlib blue/orange. This is good practice; no correction needed."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "`savefig.bbox='tight'` is set, but `plt.tight_layout()` or `constrained_layout=True` is not used on the figure. For more robust spacing (especially with annotations and titles) it is safer to enable tight or constrained layout before saving."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Grid is enabled with a light dotted style (`linestyle=':'`, `alpha=0.6`), which is generally clean and professional. Depending on the applied style (`science`, `ieee`, or seaborn), you may want to ensure the grid does not visually dominate the two data points; reducing alpha slightly (e.g., 0.3–0.4) would be safer."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "Legend is placed in the upper right and is unlikely to overlap the two points given the current ranges. However, with only two markers and a short x-range, consider verifying that the legend does not obscure the QAT annotation in edge cases (e.g., different runtimes) or move it outside the axes (`bbox_to_anchor`)."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "A scatter plot of runtime vs. val_bpb with a light connecting line is appropriate for illustrating a 2-point trade-off. With only two configurations, the dashed line may imply an interpolated frontier; if you wish to avoid that implication, you might omit the line or explicitly mark it as an illustrative trade-off direction (e.g., arrow and label)."
+      },
+      {
+        "type": "visual_quality",
+        "severity": "warning",
+        "message": "The annotation text (fontsize=8) is on the small side for print and is placed close to the QAT point. If the figure is scaled down in the paper, the text may become hard to read; consider using at least 9–10pt for annotations and verifying that it does not collide with the legend."
+      }
+    ],
+    "issue_count": 9
+  }
+]

@@ -1,0 +1,6 @@
+{
+  "decision": "refine",
+  "raw_text_excerpt": "## Decision\nREFINE\n\n## Justification\n\nThe work is not ready to move to paper-writing, but it also does not justify abandoning the core hypothesis.\n\n- The **minimum quality criteria for PROCEED are not met**:\n  - Only **one baseline** is present, not \u22652.\n  - **Seeds per condition = 1**, not \u22653.\n  - **Ablation integrity is explicitly broken** (identical outputs across conditions).\n  - **Analysis quality rating is 3/10**, below the \u22654/10 threshold.\n- The results show:\n  - The candidate is **worse i",
+  "quality_warnings": [],
+  "generated": "2026-03-19T23:33:44+00:00"
+}

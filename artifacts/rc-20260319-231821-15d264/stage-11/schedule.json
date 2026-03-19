@@ -1,0 +1,34 @@
+{
+  "tasks": [
+    {
+      "id": "setup_env_and_data",
+      "name": "Setup environment and download wikitext-103",
+      "depends_on": [],
+      "gpu_count": 0,
+      "estimated_minutes": 5,
+      "priority": 1
+    },
+    {
+      "id": "train_qat_roundtrip_model",
+      "name": "Train GPT model with QAT + distillation + codec-guided regularization",
+      "depends_on": [
+        "setup_env_and_data"
+      ],
+      "gpu_count": 1,
+      "estimated_minutes": 12,
+      "priority": 1
+    },
+    {
+      "id": "eval_and_roundtrip_export",
+      "name": "Evaluate model, run roundtrip int8+zlib export, and compute val_bpb",
+      "depends_on": [
+        "train_qat_roundtrip_model"
+      ],
+      "gpu_count": 1,
+      "estimated_minutes": 3,
+      "priority": 1
+    }
+  ],
+  "total_gpu_budget": 1,
+  "generated": "2026-03-19T00:00:00Z"
+}

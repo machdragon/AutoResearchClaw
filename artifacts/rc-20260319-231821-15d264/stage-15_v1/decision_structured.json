@@ -1,0 +1,6 @@
+{
+  "decision": "refine",
+  "raw_text_excerpt": "## Decision\n\nREFINE\n\n## Justification\n\nThe current results fail multiple minimum criteria for \u201cPROCEED\u201d and do not constitute a fundamental negative result against the hypothesis; they show an engineering/pathology issue, not a conceptual dead end.\n\nSpecifically:\n\n- The experiment is effectively a single smoke-test run (n=1) with a broken ablation, so there is no valid scientific evidence for or against the codec-aware, staged-QAT hypothesis.\n- Several mandatory quality criteria for \u201cPROCEED\u201d ar",
+  "quality_warnings": [],
+  "generated": "2026-03-19T23:30:31+00:00"
+}

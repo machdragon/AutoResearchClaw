@@ -1,0 +1,107 @@
+{
+  "decisions": [
+    {
+      "section": "Method",
+      "figure_type": "pipeline_overview",
+      "backend": "image",
+      "description": "End-to-end pipeline for Parameter Golf lane_3: data flows from training data into a float32 teacher model and a student model that undergoes staged QAT. Show (1) float-only training segment, (2) QAT phase with fake-quant nodes, (3) roundtrip path where student weights/activations are quantized to int8 and then compressed with zlib, and (4) evaluation of post-roundtrip val_bpb under a 16MB artifact cap and ≤1.10× runtime constraint. Annotate where loss terms L_task, KD loss, quantization error loss, and compression-aware losses plug into the training loop.",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "architecture_diagram",
+      "backend": "image",
+      "description": "Diagram of the compression-teacher distillation setup (Hypothesis 1). Show a float teacher network producing logits and (optionally) feature maps for distillation, alongside a student network that passes through fake-quant nodes to approximate int8. Highlight selected tensors (e.g., final-layer weights or activations) that are routed through a zlib compress/decompress block during training to compute L_zlib. Illustrate computation of teacher-relative compressibility target alpha and the additional L_comp term, then aggregation into L_total = L_task + lambda_kd * L_KD + lambda_comp * L_comp.",
+      "priority": 1
+    },
+    {
+      "section": "Results",
+      "figure_type": "bar_comparison",
+      "backend": "code",
+      "description": "Grouped bar chart comparing post-roundtrip val_bpb and runtime ratio for key baselines and proposed methods. X-axis: models (Float-only + post-hoc quant (I), Standard QAT+KD (E), Codec-guided QAT (F), Compression-biased gating QAT (H), etc.). Left Y-axis: val_bpb (lower is better), represented as bars; right Y-axis: runtime_ratio vs baseline, plotted as markers or overlayed thin bars. Mark the quick-gate threshold at runtime_ratio = 1.10 and indicate whether each configuration passes, highlighting that the provided example run (val_bpb=3.3919 vs baseline 3.3794, runtime_ratio≈1.28) fails both the bpb improvement and runtime constraints.",
+      "priority": 1
+    },
+    {
+      "section": "Results",
+      "figure_type": "line_chart",
+      "backend": "code",
+      "description": "Training curves over QAT phase comparing float-only baseline vs QAT+KD vs codec-guided QAT. X-axis: training steps or epochs in the QAT stage. Y-axes: primary panel shows validation bpb after simulated int8+zlib roundtrip evaluated periodically; a secondary panel or overlay shows task metric (e.g., NLL or accuracy). Distinct lines for each method highlight whether codec-guided losses improve convergence in val_bpb and how they trade off against task performance.",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "method_flowchart",
+      "backend": "image",
+      "description": "Flowchart for compression-biased stochastic gating (Hypothesis 2). Steps: (1) periodically sample a minibatch, quantize per-channel activations, and pass channel-wise bytes through zlib to get bpb_c; (2) update EMA statistics h_c for each channel/head; (3) for each training step, compute p_drop(c) from h_c relative to the mean compressibility, sample binary gates g_c, and apply them to activations; (4) in inference, all gates fixed to 1 (no gating). Include annotations that this operates only during QAT, does not change the deployed graph, and consumes sparse zlib calls.",
+      "priority": 2
+    },
+    {
+      "section": "Experimental Setup",
+      "figure_type": "concept_illustration",
+      "backend": "image",
+      "description": "Illustration of evaluation constraints and metrics. Show a schematic comparing baseline float-only + post-hoc quantization vs multiple QAT variants (standard QAT+distillation, codec-guided QAT, compression-biased gating). For each, depict the measurement points for val_bpb after int8+zlib roundtrip, runtime (with a 1.10× quick-gate threshold), and artifact size with a 16MB cap. Emphasize that all methods share the same architecture and int8 scheme and are judged in terms of post-roundtrip behavior.",
+      "priority": 2
+    },
+    {
+      "section": "Results",
+      "figure_type": "ablation_chart",
+      "backend": "code",
+      "description": "Bar or point-plot ablation figure showing effect sizes of different roundtrip-aware components on val_bpb and runtime. X-axis: configurations such as (A) Float-only+post-hoc, (B) QAT only, (C) QAT+KD, (D) QAT+KD+compression-teacher loss, (E) QAT+compression-biased gating, (F) QAT with both compression-teacher and gating. Y-axis: relative change in val_bpb (%) versus the float-only baseline, with a dashed line at ±1% to visualize the contrarian Hypothesis 3 threshold. Optionally annotate any configurations that exceed the 1.10× runtime or 16MB artifact constraints.",
+      "priority": 2
+    }
+  ],
+  "code_figures": [
+    {
+      "section": "Results",
+      "figure_type": "bar_comparison",
+      "backend": "code",
+      "description": "Grouped bar chart comparing post-roundtrip val_bpb and runtime ratio for key baselines and proposed methods. X-axis: models (Float-only + post-hoc quant (I), Standard QAT+KD (E), Codec-guided QAT (F), Compression-biased gating QAT (H), etc.). Left Y-axis: val_bpb (lower is better), represented as bars; right Y-axis: runtime_ratio vs baseline, plotted as markers or overlayed thin bars. Mark the quick-gate threshold at runtime_ratio = 1.10 and indicate whether each configuration passes, highlighting that the provided example run (val_bpb=3.3919 vs baseline 3.3794, runtime_ratio≈1.28) fails both the bpb improvement and runtime constraints.",
+      "priority": 1
+    },
+    {
+      "section": "Results",
+      "figure_type": "line_chart",
+      "backend": "code",
+      "description": "Training curves over QAT phase comparing float-only baseline vs QAT+KD vs codec-guided QAT. X-axis: training steps or epochs in the QAT stage. Y-axes: primary panel shows validation bpb after simulated int8+zlib roundtrip evaluated periodically; a secondary panel or overlay shows task metric (e.g., NLL or accuracy). Distinct lines for each method highlight whether codec-guided losses improve convergence in val_bpb and how they trade off against task performance.",
+      "priority": 1
+    },
+    {
+      "section": "Results",
+      "figure_type": "ablation_chart",
+      "backend": "code",
+      "description": "Bar or point-plot ablation figure showing effect sizes of different roundtrip-aware components on val_bpb and runtime. X-axis: configurations such as (A) Float-only+post-hoc, (B) QAT only, (C) QAT+KD, (D) QAT+KD+compression-teacher loss, (E) QAT+compression-biased gating, (F) QAT with both compression-teacher and gating. Y-axis: relative change in val_bpb (%) versus the float-only baseline, with a dashed line at ±1% to visualize the contrarian Hypothesis 3 threshold. Optionally annotate any configurations that exceed the 1.10× runtime or 16MB artifact constraints.",
+      "priority": 2
+    }
+  ],
+  "image_figures": [
+    {
+      "section": "Method",
+      "figure_type": "pipeline_overview",
+      "backend": "image",
+      "description": "End-to-end pipeline for Parameter Golf lane_3: data flows from training data into a float32 teacher model and a student model that undergoes staged QAT. Show (1) float-only training segment, (2) QAT phase with fake-quant nodes, (3) roundtrip path where student weights/activations are quantized to int8 and then compressed with zlib, and (4) evaluation of post-roundtrip val_bpb under a 16MB artifact cap and ≤1.10× runtime constraint. Annotate where loss terms L_task, KD loss, quantization error loss, and compression-aware losses plug into the training loop.",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "architecture_diagram",
+      "backend": "image",
+      "description": "Diagram of the compression-teacher distillation setup (Hypothesis 1). Show a float teacher network producing logits and (optionally) feature maps for distillation, alongside a student network that passes through fake-quant nodes to approximate int8. Highlight selected tensors (e.g., final-layer weights or activations) that are routed through a zlib compress/decompress block during training to compute L_zlib. Illustrate computation of teacher-relative compressibility target alpha and the additional L_comp term, then aggregation into L_total = L_task + lambda_kd * L_KD + lambda_comp * L_comp.",
+      "priority": 1
+    },
+    {
+      "section": "Method",
+      "figure_type": "method_flowchart",
+      "backend": "image",
+      "description": "Flowchart for compression-biased stochastic gating (Hypothesis 2). Steps: (1) periodically sample a minibatch, quantize per-channel activations, and pass channel-wise bytes through zlib to get bpb_c; (2) update EMA statistics h_c for each channel/head; (3) for each training step, compute p_drop(c) from h_c relative to the mean compressibility, sample binary gates g_c, and apply them to activations; (4) in inference, all gates fixed to 1 (no gating). Include annotations that this operates only during QAT, does not change the deployed graph, and consumes sparse zlib calls.",
+      "priority": 2
+    },
+    {
+      "section": "Experimental Setup",
+      "figure_type": "concept_illustration",
+      "backend": "image",
+      "description": "Illustration of evaluation constraints and metrics. Show a schematic comparing baseline float-only + post-hoc quantization vs multiple QAT variants (standard QAT+distillation, codec-guided QAT, compression-biased gating). For each, depict the measurement points for val_bpb after int8+zlib roundtrip, runtime (with a 1.10× quick-gate threshold), and artifact size with a 16MB cap. Emphasize that all methods share the same architecture and int8 scheme and are judged in terms of post-roundtrip behavior.",
+      "priority": 2
+    }
+  ],
+  "total": 7
+}

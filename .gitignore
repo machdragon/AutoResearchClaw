@@ -13,8 +13,10 @@ workspaces/
 !.claude/skills/**/SKILL.md
 .claude/settings.local.json
 
-# Experiment run artifacts (local only)
-artifacts/
+# Experiment run artifacts (local only). Exception: archived reference runs.
+artifacts/*
+!artifacts/rc-20260319-231821-15d264/
+!artifacts/rc-20260319-231821-15d264/**
 output/
 experiment_metaclaw/
 promotional/
