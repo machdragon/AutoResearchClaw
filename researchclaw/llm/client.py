@@ -342,13 +342,19 @@ class LLMClient:
             # original, un-modified messages).
             msgs = [dict(m) for m in messages]
             is_new_param = any(model.startswith(prefix) for prefix in _NEW_PARAM_MODELS)
+
+            # MiniMax API requires temperature in [0, 1.0].
+            temp_for_request = temperature
+            if "api.minimax.io" in self.config.base_url:
+                temp_for_request = max(0.0, min(temp_for_request, 1.0))
+
             body: dict[str, Any] = {
                 "model": model,
                 "messages": msgs,
             }
             # gpt-5 and o3-family models reject temperature parameter
             if not is_new_param:
-                body["temperature"] = temperature
+                body["temperature"] = temp_for_request
 
             # Use correct token parameter based on model
             if is_new_param:
