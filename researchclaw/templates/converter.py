@@ -193,7 +193,7 @@ def _sanitize_latex_output(
         '→': r'\rightarrow{}', '←': r'\leftarrow{}', '↔': r'\leftrightarrow{}',
         '∀': r'\forall{}', '∃': r'\exists{}',
         '∑': r'\sum{}', '∏': r'\prod{}', '∫': r'\int{}',
-        '√': r'\sqrt{}', '∞': r'\infty{}', '·': r'\cdot{}',
+        '√': r'\surd ', '∞': r'\infty ', '·': r'\cdot ',
         '×': r'\times{}', '÷': r'\div{}', '±': r'\pm{}',
         '∇': r'\nabla{}', '∂': r'\partial{}', '∝': r'\propto{}',
         'α': r'\alpha{}', 'β': r'\beta{}', 'γ': r'\gamma{}', 'δ': r'\delta{}',
